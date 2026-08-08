@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+// Set VITE_API_URL in your deployment to override the deployed API address.
+const defaultApiUrl = import.meta.env.DEV
+    ? 'http://localhost:5005/api'
+    : 'https://machad-backend.onrender.com/api';
+const apiBaseUrl = (import.meta.env.VITE_API_URL || defaultApiUrl).replace(/\/$/, '');
+
 const api = axios.create({
-    baseURL: 'http://localhost:5005/api',
+    baseURL: apiBaseUrl,
 });
 
 // Request interceptor to add auth token

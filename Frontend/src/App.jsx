@@ -106,12 +106,14 @@ const App = () => {
       setBranches([]);
     };
     window.addEventListener('auth:unauthorized', handleUnauthorized);
+    window.addEventListener('tenant:updated', fetchTenantSettings);
 
     const cachedBranding = localStorage.getItem('tenantBranding');
     if (cachedBranding) {
       try {
-        const { brandColor, accentColor } = JSON.parse(cachedBranding);
+        const { brandColor, accentColor, name } = JSON.parse(cachedBranding);
         applyBrandColors(brandColor, accentColor);
+        if (name) document.title = name;
       } catch (e) {
         console.warn('Failed to parse cached branding');
       }
@@ -139,6 +141,7 @@ const App = () => {
 
     return () => {
       window.removeEventListener('auth:unauthorized', handleUnauthorized);
+      window.removeEventListener('tenant:updated', fetchTenantSettings);
     };
   }, []);
 
@@ -152,8 +155,11 @@ const App = () => {
         brandColor,
         accentColor,
         name: data?.name,
+        systemSubtitle: data?.systemSubtitle,
         logo: data?.logo
       }));
+
+      document.title = data?.name || 'Cumar Binu Khadhaab';
 
       applyBrandColors(brandColor, accentColor);
     } catch (error) {

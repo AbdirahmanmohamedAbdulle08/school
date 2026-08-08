@@ -7,7 +7,7 @@ const getOrCreateSettings = async () => {
     let settings = await SystemSettings.findOne();
     if (!settings) {
         settings = await SystemSettings.create({
-            businessInfo: { name: 'My Warehouse' },
+            businessInfo: { name: 'Cumar Binu Khadhaab', systemSubtitle: 'Institute Management' },
             operatingHours: [
                 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
             ].map(day => ({ day, open: '08:00 AM', close: '06:00 PM', isClosed: day === 'Sunday' }))
@@ -23,7 +23,8 @@ router.get('/me', async (req, res) => {
     try {
         const settings = await getOrCreateSettings();
         res.json({
-            name: settings.businessInfo.name || 'My Warehouse',
+            name: settings.businessInfo.name || 'Cumar Binu Khadhaab',
+            systemSubtitle: settings.businessInfo.systemSubtitle || 'Institute Management',
             legalName: settings.businessInfo.legalName,
             industry: settings.businessInfo.industry,
             description: settings.businessInfo.description,
@@ -41,7 +42,8 @@ router.get('/me', async (req, res) => {
     } catch (error) {
         // Fallback to defaults if DB is not ready
         res.json({
-            name: 'My Warehouse',
+            name: 'Cumar Binu Khadhaab',
+            systemSubtitle: 'Institute Management',
             logo: null,
             settings: {
                 brandColor: '#4f46e5',
@@ -60,6 +62,7 @@ router.put('/me', async (req, res) => {
         const body = req.body;
 
         if (body.name !== undefined) settings.businessInfo.name = body.name;
+        if (body.systemSubtitle !== undefined) settings.businessInfo.systemSubtitle = body.systemSubtitle;
         if (body.legalName !== undefined) settings.businessInfo.legalName = body.legalName;
         if (body.industry !== undefined) settings.businessInfo.industry = body.industry;
         if (body.description !== undefined) settings.businessInfo.description = body.description;

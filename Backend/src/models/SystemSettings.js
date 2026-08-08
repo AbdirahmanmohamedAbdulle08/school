@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const systemSettingsSchema = new mongoose.Schema({
     // Business Information
     businessInfo: {
-        name: { type: String, default: 'My Warehouse' },
+        name: { type: String, default: 'Cumar Binu Khadhaab' },
+        systemSubtitle: { type: String, default: 'Institute Management' },
         legalName: { type: String, default: '' },
         industry: { type: String, default: 'Warehousing & Distribution' },
         description: { type: String, default: '' },

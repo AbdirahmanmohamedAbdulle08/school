@@ -27,6 +27,7 @@ const BusinessProfile = () => {
   const [activeTab, setActiveTab] = useState('general');
   const [tenant, setTenant] = useState({
     name: '',
+    systemSubtitle: 'Institute Management',
     legalName: '',
     industry: 'Green warehouse',
     description: '',
@@ -73,6 +74,7 @@ const BusinessProfile = () => {
     setIsSaving(true);
     try {
       await api.put('/tenants/me', tenant);
+      window.dispatchEvent(new Event('tenant:updated'));
       showAlert({
         type: 'success',
         title: 'Woohoo!',
@@ -174,7 +176,12 @@ const BusinessProfile = () => {
                 <div className="space-y-2">
                   <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Display Business Name</label>
                   <input type="text" value={tenant.name} onChange={e => setTenant({ ...tenant, name: e.target.value })} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-brand-500 outline-none transition-all dark:text-white" />
-                  <p className="text-[10px] text-slate-500">The name customers see on receipts and the portal.</p>
+                  <p className="text-[10px] text-slate-500">Shown in the sidebar, browser tab, receipts, and portal.</p>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">System Subtitle</label>
+                  <input type="text" value={tenant.systemSubtitle || ''} onChange={e => setTenant({ ...tenant, systemSubtitle: e.target.value })} placeholder="Institute Management" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-brand-500 outline-none transition-all dark:text-white" />
+                  <p className="text-[10px] text-slate-500">The smaller text shown below the system name in the sidebar.</p>
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Legal Entity Name</label>

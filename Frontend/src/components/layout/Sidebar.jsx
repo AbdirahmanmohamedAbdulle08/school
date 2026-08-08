@@ -15,13 +15,13 @@ const Sidebar = ({ user, userRole, isMobileOpen, setIsMobileOpen, onNavigate, on
     const cached = localStorage.getItem('tenantBranding');
     if (cached) {
       try {
-        const { logo, name } = JSON.parse(cached);
-        return { name: name || '', logo: logo || null };
+        const { logo, name, systemSubtitle } = JSON.parse(cached);
+        return { name: name || '', systemSubtitle: systemSubtitle || '', logo: logo || null };
       } catch (e) {
-        return { name: '', logo: null };
+        return { name: '', systemSubtitle: '', logo: null };
       }
     }
-    return { name: '', logo: null };
+    return { name: '', systemSubtitle: '', logo: null };
   });
   const location = useLocation();
   const navRef = useRef(null);
@@ -34,6 +34,7 @@ const Sidebar = ({ user, userRole, isMobileOpen, setIsMobileOpen, onNavigate, on
         if (data) {
           setTenantInfo({
             name: data.name || '',
+            systemSubtitle: data.systemSubtitle || '',
             logo: data.logo || null
           });
         }
@@ -127,8 +128,8 @@ const Sidebar = ({ user, userRole, isMobileOpen, setIsMobileOpen, onNavigate, on
           )}
         </div>
         <div className="overflow-hidden min-w-0">
-          <span className="text-base font-black text-white tracking-tight block truncate" title={tenantInfo.name || 'Institute System'}>{tenantInfo.name || 'Institute System'}</span>
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300">{t('instituteManagement')}</span>
+          <span className="text-base font-black text-white tracking-tight block truncate" title={tenantInfo.name || 'Cumar Binu Khadhaab'}>{tenantInfo.name || 'Cumar Binu Khadhaab'}</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300">{tenantInfo.systemSubtitle || t('instituteManagement')}</span>
         </div>
       </div>
 
