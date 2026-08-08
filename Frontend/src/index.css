@@ -1,0 +1,115 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+/* Dynamic Brand Colors - Set by JavaScript via colorUtils */
+:root {
+  /* Brand color scale (50-950) - defaults match the Omar Bin Al-Khattab logo green */
+  /* These are overridden by App.jsx when tenant settings are loaded */
+  --color-brand-50: 244 248 245;
+  --color-brand-100: 233 242 236;
+  --color-brand-200: 199 222 206;
+  --color-brand-300: 154 195 167;
+  --color-brand-400: 98 162 119;
+  --color-brand-500: 53 135 80;
+  --color-brand-600: 30 122 60;  /* Primary brand color (logo green) */
+  --color-brand-700: 26 104 51;
+  --color-brand-800: 21 85 42;
+  --color-brand-900: 17 67 33;
+  --color-brand-950: 12 49 24;
+
+  /* Accent color scale - logo gold */
+  --color-accent-50: 251 249 243;
+  --color-accent-100: 248 243 231;
+  --color-accent-200: 237 225 194;
+  --color-accent-300: 223 201 145;
+  --color-accent-400: 205 170 84;
+  --color-accent-500: 191 146 35;
+  --color-accent-600: 184 134 11;  /* Logo gold */
+  --color-accent-700: 156 114 9;
+  --color-accent-800: 129 94 8;
+  --color-accent-900: 101 74 6;
+  --color-accent-950: 74 54 4;
+}
+
+@layer base {
+  html {
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    /* Larger base size so the whole system reads bigger (all rem-based text scales). */
+    font-size: 17.5px;
+  }
+
+  body {
+    @apply antialiased text-slate-900 bg-slate-50 dark:bg-slate-950;
+    background:
+      radial-gradient(circle at top left, rgba(30, 122, 60, 0.08), transparent 28rem),
+      radial-gradient(circle at top right, rgba(184, 134, 11, 0.08), transparent 30rem),
+      #f8fafc;
+  }
+
+  .dark body {
+    background:
+      radial-gradient(circle at top left, rgba(30, 122, 60, 0.12), transparent 30rem),
+      radial-gradient(circle at top right, rgba(184, 134, 11, 0.12), transparent 34rem),
+      #020617;
+  }
+
+  h1, h2, h3 {
+    @apply tracking-tight;
+  }
+
+  input, select, textarea {
+    @apply rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition-all placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100;
+  }
+
+  table {
+    @apply w-full border-separate border-spacing-0 text-sm;
+  }
+
+  thead th {
+    @apply bg-slate-50/80 px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-slate-500 first:rounded-l-2xl last:rounded-r-2xl dark:bg-slate-800/70 dark:text-slate-400;
+  }
+
+  tbody td {
+    @apply border-b border-slate-100 px-4 py-4 text-slate-700 dark:border-slate-800/70 dark:text-slate-300;
+  }
+
+  tbody tr {
+    @apply transition-colors hover:bg-slate-50/80 dark:hover:bg-slate-800/40;
+  }
+}
+
+@layer components {
+  .premium-card {
+    @apply rounded-3xl border border-white/80 bg-white/95 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-900/90 dark:shadow-black/20;
+  }
+
+  .premium-button {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-slate-900/10 transition-all hover:-translate-y-0.5 hover:bg-slate-800 active:translate-y-0 dark:bg-white dark:text-slate-950;
+  }
+
+  .premium-button-primary {
+    @apply bg-gradient-to-r from-emerald-500 via-blue-600 to-violet-600 text-white shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/25 dark:text-white;
+  }
+
+  .status-pill {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-black uppercase tracking-wider;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-slate-700 hover:bg-slate-600;
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "_id": "6a67d032d357ccb3af5d8c90",
+    "categoryId": "6a67807e388db63b78998f8c",
+    "amount": 12,
+    "method": "Mobile Money",
+    "payerName": "",
+    "senderPhone": "627292734",
+    "senderName": "hasan ali",
+    "senderEntityType": "manual",
+    "receiverPhone": "628272828",
+    "receiverName": "jaamac",
+    "receiverEntityType": "manual",
+    "date": "2026-07-27",
+    "description": "",
+    "feeRemaining": null,
+    "walletId": "6a66165784298a841fa8aa5a",
+    "createdBy": "6a649cad47fa0df5815dc967",
+    "createdAt": "2026-07-27T21:40:02.261Z",
+    "updatedAt": "2026-07-27T21:40:02.261Z",
+    "__v": 0
+  }
+]

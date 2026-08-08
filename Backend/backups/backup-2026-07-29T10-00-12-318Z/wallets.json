@@ -1,0 +1,15 @@
+[
+  {
+    "_id": "6a66165784298a841fa8aa5a",
+    "branchId": null,
+    "name": "Evc-Plus",
+    "type": "Mobile",
+    "balance": 452,
+    "currency": "USD",
+    "description": "",
+    "status": "Active",
+    "createdAt": "2026-07-26T14:14:47.301Z",
+    "updatedAt": "2026-07-27T21:40:02.534Z",
+    "__v": 0
+  }
+]

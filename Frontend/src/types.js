@@ -1,0 +1,10 @@
+export const UserRole = {
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  INSTITUTE_ADMIN: 'INSTITUTE_ADMIN',
+  BRANCH_MANAGER: 'BRANCH_MANAGER',
+  TEACHER: 'TEACHER',
+  ACCOUNTANT: 'ACCOUNTANT',
+  // Compatibility fallbacks for existing guards
+  SYSTEM_ADMIN: 'SUPER_ADMIN',
+  OWNER: 'SUPER_ADMIN'
+};

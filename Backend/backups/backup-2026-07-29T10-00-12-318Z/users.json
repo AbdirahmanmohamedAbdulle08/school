@@ -1,0 +1,43 @@
+[
+  {
+    "_id": "6a649cad47fa0df5815dc967",
+    "fullName": "Super Admin",
+    "email": "admin@institute.com",
+    "passwordHash": "$2b$10$ufs74QBT5exxWp7NoozjcOoEopNvBezPDI1PBUp7yt4hA4DpMgDOa",
+    "role": "Super Admin",
+    "salary": 0,
+    "status": "active",
+    "createdAt": "2026-07-25T11:23:25.293Z",
+    "__v": 1,
+    "phone": "",
+    "roles": []
+  },
+  {
+    "_id": "6a66105056ce6ad7b99ab72b",
+    "fullName": "Hassan",
+    "phone": "2398723",
+    "email": "hassan_4707@teacher.local",
+    "passwordHash": "$2b$10$XSbX5hj4D4PZs9/TC/F4D.PETNUGT5/yg0kTKYPXTu3iNrh8AB20K",
+    "role": "Teacher",
+    "roles": [],
+    "salary": 200,
+    "gender": "Male",
+    "status": "active",
+    "createdAt": "2026-07-26T13:49:04.715Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a66107656ce6ad7b99ab737",
+    "fullName": "Ali",
+    "phone": "615678823",
+    "email": "ali_2570@teacher.local",
+    "passwordHash": "$2b$10$BsbES8J8xTsrmLdeTtqBcu8WFrLb2F1kpzQIYzsl31ImQxnAvHDmi",
+    "role": "Teacher",
+    "roles": [],
+    "salary": 300,
+    "gender": "Male",
+    "status": "active",
+    "createdAt": "2026-07-26T13:49:42.571Z",
+    "__v": 0
+  }
+]

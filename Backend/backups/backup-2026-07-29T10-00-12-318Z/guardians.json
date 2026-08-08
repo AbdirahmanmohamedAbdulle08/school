@@ -1,0 +1,36 @@
+[
+  {
+    "_id": "6a64a9d0e4345e73cca7c43f",
+    "fullName": "mohamed",
+    "phone": "6277",
+    "address": "celasha",
+    "relationship": "Father",
+    "type": "Parent",
+    "status": "Active",
+    "createdAt": "2026-07-25T12:19:28.915Z",
+    "updatedAt": "2026-07-25T12:19:28.915Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a64ab99fdf2af7845176d0f",
+    "fullName": "ali jimcale",
+    "phone": "6177",
+    "relationship": "Guardian",
+    "type": "Parent",
+    "status": "Active",
+    "createdAt": "2026-07-25T12:27:05.573Z",
+    "updatedAt": "2026-07-25T12:27:05.573Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a6787fbcce4f0abd8bae82a",
+    "fullName": "mustaf salad",
+    "phone": "612638368",
+    "relationship": "Responsible",
+    "type": "Parent",
+    "status": "Active",
+    "createdAt": "2026-07-27T16:31:55.198Z",
+    "updatedAt": "2026-07-27T16:31:55.198Z",
+    "__v": 0
+  }
+]

@@ -1,0 +1,55 @@
+[
+  {
+    "_id": "6a64c248e6a8ba056b889681",
+    "name": "Institute Admin",
+    "description": "Complete management access to institute operations, classes, and records.",
+    "isSystemRole": true,
+    "isRequired": false,
+    "__v": 0,
+    "createdAt": "2026-07-25T14:03:52.471Z",
+    "updatedAt": "2026-07-25T14:03:52.471Z"
+  },
+  {
+    "_id": "6a64c248e6a8ba056b889680",
+    "name": "Super Admin",
+    "description": "Full system administrative authority across all modules and settings.",
+    "permissions": {
+      "*": true
+    },
+    "isSystemRole": true,
+    "isRequired": true,
+    "__v": 0,
+    "createdAt": "2026-07-25T14:03:52.468Z",
+    "updatedAt": "2026-07-25T14:03:52.468Z"
+  },
+  {
+    "_id": "6a64c248e6a8ba056b889682",
+    "name": "Branch Manager",
+    "description": "Administrative access restricted to specific branch operations.",
+    "isSystemRole": true,
+    "isRequired": false,
+    "__v": 0,
+    "createdAt": "2026-07-25T14:03:52.471Z",
+    "updatedAt": "2026-07-25T14:03:52.471Z"
+  },
+  {
+    "_id": "6a64c248e6a8ba056b889683",
+    "name": "Teacher",
+    "description": "Access to student classes, attendance tracking, and reports.",
+    "isSystemRole": false,
+    "isRequired": false,
+    "__v": 0,
+    "createdAt": "2026-07-25T14:03:52.471Z",
+    "updatedAt": "2026-07-25T14:03:52.471Z"
+  },
+  {
+    "_id": "6a64c248e6a8ba056b889684",
+    "name": "Accountant",
+    "description": "Financial management access for student payments, salaries, expenses, and wallets.",
+    "isSystemRole": false,
+    "isRequired": false,
+    "__v": 0,
+    "createdAt": "2026-07-25T14:03:52.471Z",
+    "updatedAt": "2026-07-25T14:03:52.471Z"
+  }
+]

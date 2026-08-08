@@ -1,0 +1,13 @@
+[
+  {
+    "_id": "6a6613db56ce6ad7b99ab7f6",
+    "teacherId": "6a66105056ce6ad7b99ab72b",
+    "month": "2026-10",
+    "amount": 500,
+    "status": "Paid",
+    "paymentDate": "2026-07-26T14:04:11.757Z",
+    "createdAt": "2026-07-26T14:04:11.758Z",
+    "updatedAt": "2026-07-26T14:04:11.758Z",
+    "__v": 0
+  }
+]

@@ -1,0 +1,54 @@
+[
+  {
+    "_id": "6a64b8e6e359116e2dee1074",
+    "session": "Evening",
+    "studentId": "6a64a9d1e4345e73cca7c442",
+    "date": "2026-07-25",
+    "__v": 0,
+    "arrivalTime": "08:30",
+    "classId": "6a64a97ee4345e73cca7c427",
+    "createdAt": "2026-07-25T13:23:50.166Z",
+    "markedBy": "6a649cad47fa0df5815dc967",
+    "status": "Late",
+    "updatedAt": "2026-07-25T13:23:50.166Z"
+  },
+  {
+    "_id": "6a64b8e6e359116e2dee1075",
+    "date": "2026-07-25",
+    "studentId": "6a64ab9afdf2af7845176d12",
+    "session": "Breakfast",
+    "__v": 0,
+    "arrivalTime": "08:35",
+    "classId": "6a64a97ee4345e73cca7c427",
+    "createdAt": "2026-07-25T13:23:50.379Z",
+    "markedBy": "6a649cad47fa0df5815dc967",
+    "status": "Late",
+    "updatedAt": "2026-07-25T13:23:50.379Z"
+  },
+  {
+    "_id": "6a660c83aa4ba8c1099845b3",
+    "studentId": "6a64a9d1e4345e73cca7c442",
+    "classId": "6a64a97ee4345e73cca7c427",
+    "date": "2026-07-26",
+    "status": "Late",
+    "session": "Morning",
+    "arrivalTime": "08:30 AM",
+    "markedBy": "6a649cad47fa0df5815dc967",
+    "createdAt": "2026-07-26T13:32:51.920Z",
+    "updatedAt": "2026-07-26T13:32:51.920Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a660c85aa4ba8c1099845b9",
+    "studentId": "6a64ab9afdf2af7845176d12",
+    "classId": "6a64a97ee4345e73cca7c427",
+    "date": "2026-07-26",
+    "status": "Absent",
+    "session": "Morning",
+    "arrivalTime": "",
+    "markedBy": "6a649cad47fa0df5815dc967",
+    "createdAt": "2026-07-26T13:32:53.235Z",
+    "updatedAt": "2026-07-26T13:32:53.235Z",
+    "__v": 0
+  }
+]

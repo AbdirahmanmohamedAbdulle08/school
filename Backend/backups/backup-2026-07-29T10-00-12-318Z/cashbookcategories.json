@@ -1,0 +1,32 @@
+[
+  {
+    "_id": "6a67807e388db63b78998f8c",
+    "title": "bil",
+    "type": "Income",
+    "description": "",
+    "createdBy": "6a649cad47fa0df5815dc967",
+    "createdAt": "2026-07-27T15:59:58.466Z",
+    "updatedAt": "2026-07-27T15:59:58.466Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a67808b388db63b78998f8f",
+    "title": "salary",
+    "type": "Expense",
+    "description": "",
+    "createdBy": "6a649cad47fa0df5815dc967",
+    "createdAt": "2026-07-27T16:00:11.620Z",
+    "updatedAt": "2026-07-27T16:00:11.620Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a678095388db63b78998f92",
+    "title": "rent",
+    "type": "Expense",
+    "description": "",
+    "createdBy": "6a649cad47fa0df5815dc967",
+    "createdAt": "2026-07-27T16:00:21.707Z",
+    "updatedAt": "2026-07-27T16:00:21.707Z",
+    "__v": 0
+  }
+]

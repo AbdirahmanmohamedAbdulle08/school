@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "6a67d032d357ccb3af5d8c93",
+    "branchId": null,
+    "walletId": "6a66165784298a841fa8aa5a",
+    "type": "Income",
+    "amount": 12,
+    "referenceId": "6a67d032d357ccb3af5d8c90",
+    "description": "Cashbook: bil (Income)",
+    "date": "2026-07-27T00:00:00.000Z",
+    "createdBy": "6a649cad47fa0df5815dc967",
+    "createdAt": "2026-07-27T21:40:02.788Z",
+    "updatedAt": "2026-07-27T21:40:02.788Z",
+    "__v": 0
+  }
+]

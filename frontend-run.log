@@ -1,0 +1,66 @@
+
+> inventory-management-system@0.0.0 dev
+> vite
+
+
+  [32m[1mVITE[22m v6.4.1[39m  [2mready in [0m[1m482[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3005[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.146.1:[1m3005[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.58.1:[1m3005[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://10.206.153.49:[1m3005[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[2m5:09:17 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/layout/Sidebar.jsx, /src/index.css[22m
+[2m5:19:00 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/DashboardOverview.jsx, /src/index.css[22m
+[2m5:20:43 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/DashboardOverview.jsx, /src/index.css[22m
+[2m5:32:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/DashboardOverview.jsx, /src/index.css[22m
+[2m5:33:11 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/layout/Navbar.jsx, /src/index.css[22m
+[2m5:38:25 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/DashboardOverview.jsx, /src/index.css[22m
+[2m5:40:25 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/DashboardOverview.jsx, /src/index.css[22m
+[2m5:41:18 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/DashboardOverview.jsx, /src/index.css[22m
+[2m5:43:20 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/DashboardOverview.jsx, /src/index.css[22m
+[2m5:46:41 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/DashboardOverview.jsx, /src/index.css[22m
+[2m5:49:41 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/AiAssistant.jsx, /src/index.css[22m
+[2m5:51:20 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/AiAssistant.jsx, /src/index.css[22m
+[2m6:20:17 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/VendorsManagement.jsx, /src/index.css[22m
+[2m6:20:41 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/VendorsManagement.jsx, /src/index.css[22m
+[2m6:21:24 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/VendorsManagement.jsx, /src/index.css[22m
+[2m6:21:34 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/VendorsManagement.jsx, /src/index.css[22m
+[2m6:21:42 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/VendorsManagement.jsx, /src/index.css[22m
+[2m6:22:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/VendorsManagement.jsx, /src/index.css[22m
+[2m6:41:05 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/VendorsManagement.jsx, /src/index.css[22m
+[2m7:11:37 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/ReceivingOperations.jsx, /src/index.css[22m
+[2m7:22:13 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:22:36 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:23:33 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/DashboardOverview.jsx, /src/index.css[22m
+[2m7:31:43 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:31:51 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:32:19 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:32:29 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:32:40 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:33:12 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:33:22 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:33:34 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:34:09 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:34:36 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:38:55 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryPurchase.jsx, /src/index.css[22m
+[2m7:55:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/CustomersManagement.jsx, /src/index.css[22m
+[2m7:55:18 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/CustomersManagement.jsx, /src/index.css[22m
+[2m7:55:41 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/CustomersManagement.jsx, /src/index.css[22m
+[2m7:55:54 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/CustomersManagement.jsx, /src/index.css[22m
+[2m7:56:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/CustomersManagement.jsx, /src/index.css[22m
+[2m7:57:04 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/CustomersManagement.jsx, /src/index.css[22m
+[2m7:57:12 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/CustomersManagement.jsx, /src/index.css[22m
+[2m7:57:21 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/CustomersManagement.jsx, /src/index.css[22m
+[2m8:02:07 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/CustomersManagement.jsx, /src/index.css[22m
+[2m8:03:06 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/CustomersManagement.jsx, /src/index.css[22m
+[2m8:07:10 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/CustomersManagement.jsx, /src/index.css[22m
+[2m8:22:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/logistics/ShipmentsList.jsx, /src/index.css[22m
+[2m8:29:56 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/StockMovement.jsx, /src/index.css[22m
+[2m8:30:34 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/StockMovement.jsx, /src/index.css[22m
+[2m8:30:56 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryHistory.jsx, /src/index.css[22m
+[2m8:36:53 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/StockMovement.jsx, /src/index.css[22m
+[2m9:05:12 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/InventoryTransfer.jsx, /src/index.css[22m

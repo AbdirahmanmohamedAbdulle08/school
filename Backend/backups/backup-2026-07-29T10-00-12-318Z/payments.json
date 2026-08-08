@@ -1,0 +1,32 @@
+[
+  {
+    "_id": "6a6619560164ded7baf6d2b7",
+    "studentId": "6a64ab9afdf2af7845176d12",
+    "guardianId": "6a64ab99fdf2af7845176d0f",
+    "walletId": "6a66165784298a841fa8aa5a",
+    "amount": 20,
+    "month": "2026-08",
+    "paymentMethod": "Mobile Money",
+    "status": "Completed",
+    "description": "",
+    "paymentDate": "2026-07-26T14:27:34.510Z",
+    "createdAt": "2026-07-26T14:27:34.517Z",
+    "updatedAt": "2026-07-26T14:27:34.517Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a66196d0164ded7baf6d2be",
+    "studentId": "6a64ab9afdf2af7845176d12",
+    "guardianId": "6a64ab99fdf2af7845176d0f",
+    "walletId": "6a66165784298a841fa8aa5a",
+    "amount": 20,
+    "month": "2026-08",
+    "paymentMethod": "Cash",
+    "status": "Completed",
+    "description": "",
+    "paymentDate": "2026-07-26T14:27:57.029Z",
+    "createdAt": "2026-07-26T14:27:57.030Z",
+    "updatedAt": "2026-07-26T14:27:57.030Z",
+    "__v": 0
+  }
+]

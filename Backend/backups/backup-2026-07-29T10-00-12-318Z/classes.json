@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "6a64a97ee4345e73cca7c427",
+    "name": "kj",
+    "className": "kj",
+    "gradeLevel": "saf",
+    "room": "sdf235",
+    "capacity": 30,
+    "status": "Active",
+    "createdAt": "2026-07-25T12:18:06.873Z",
+    "updatedAt": "2026-07-25T12:18:20.128Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a69ce0ec44a96cbaa7f13a9",
+    "name": "xalqada sayd binu  saabid",
+    "className": "xalqada sayd binu  saabid",
+    "gradeLevel": "xifdin",
+    "room": "qolka 2aad",
+    "capacity": 30,
+    "status": "Active",
+    "createdAt": "2026-07-29T09:55:26.859Z",
+    "updatedAt": "2026-07-29T09:55:26.859Z",
+    "__v": 0
+  }
+]
