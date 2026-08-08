@@ -12,13 +12,16 @@ import {
   Twitter,
   Instagram,
   Facebook,
-  ShieldCheck
+  ShieldCheck,
+  Languages
 } from 'lucide-react';
 import api from '../services/api';
 import { useAlert } from '../components/common/alerts/useAlert';
+import { useLanguage } from '../i18n/LanguageContext.jsx';
 
 const BusinessProfile = () => {
   const { showAlert } = useAlert();
+  const { language, setLanguage, t } = useLanguage();
   const [isSaving, setIsSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('general');
@@ -152,6 +155,22 @@ const BusinessProfile = () => {
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('systemLanguage')}</label>
+                  <div className="relative">
+                    <Languages size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <select
+                      value={language}
+                      onChange={(event) => setLanguage(event.target.value)}
+                      className="w-full appearance-none bg-slate-50 py-2.5 pl-11 pr-4 text-sm font-medium outline-none transition-all focus:ring-2 focus:ring-brand-500 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl"
+                      aria-label={t('systemLanguage')}
+                    >
+                      <option value="en">English</option>
+                      <option value="so">Soomaali</option>
+                    </select>
+                  </div>
+                  <p className="text-[10px] text-slate-500">Select English or Soomaali to change the interface language.</p>
+                </div>
                 <div className="space-y-2">
                   <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Display Business Name</label>
                   <input type="text" value={tenant.name} onChange={e => setTenant({ ...tenant, name: e.target.value })} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-brand-500 outline-none transition-all dark:text-white" />

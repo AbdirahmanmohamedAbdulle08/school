@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Search, Menu, User, Settings, LogOut, Key, Moon, Sun, SlidersHorizontal, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../../i18n/LanguageContext.jsx';
 
 const Navbar = ({
   user,
@@ -10,6 +11,7 @@ const Navbar = ({
   toggleDarkMode,
   onLogout
 }) => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const getRoleLabel = (role) => {
     switch (role) {
@@ -60,7 +62,7 @@ const Navbar = ({
         <button
           onClick={onMenuClick}
           className="lg:hidden p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl text-slate-600 dark:text-slate-400"
-          aria-label="Open Menu"
+          aria-label={t('openMenu')}
         >
           <Menu size={24} />
         </button>
@@ -69,7 +71,7 @@ const Navbar = ({
           <Search size={18} className="text-slate-400" />
           <input
             type="text"
-            placeholder="Search anything..."
+            placeholder={t('search')}
             className="bg-transparent border-none outline-none text-sm w-full placeholder:text-slate-400 dark:text-slate-200 p-0 shadow-none focus:ring-0"
           />
           <span className="hidden md:inline-flex rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-black text-slate-400 shadow-sm dark:border-slate-700 dark:bg-slate-800">Ctrl + K</span>
@@ -78,9 +80,9 @@ const Navbar = ({
 
       <div className="flex items-center gap-3 md:gap-4">
         <button
-          onClick={() => goTo('/settings/profile')}
+          onClick={() => goTo('/settings/preferences')}
           className="hidden sm:flex p-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl transition-colors border border-slate-200/70 dark:border-slate-800"
-          aria-label="Settings"
+          aria-label={t('settings')}
         >
           <SlidersHorizontal size={19} />
         </button>
@@ -89,7 +91,7 @@ const Navbar = ({
         <button
           onClick={toggleDarkMode}
           className="p-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl transition-colors border border-slate-200/70 dark:border-slate-800"
-          aria-label="Toggle Dark Mode"
+          aria-label={t('toggleDarkMode')}
         >
           {isDarkMode ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} />}
         </button>
@@ -171,8 +173,8 @@ const Navbar = ({
                 <button onClick={() => { setActiveModal('password'); setIsDropdownOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 transition-colors">
                   <Key size={16} className="text-slate-400 dark:text-slate-500" /> Change Password
                 </button>
-                <button onClick={() => goTo('/settings/profile')} className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 transition-colors">
-                  <Settings size={16} className="text-slate-400 dark:text-slate-500" /> Settings
+                <button onClick={() => goTo('/settings/preferences')} className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 transition-colors">
+                  <Settings size={16} className="text-slate-400 dark:text-slate-500" /> {t('settings')}
                 </button>
               </div>
 
@@ -180,7 +182,7 @@ const Navbar = ({
                 <button
                   onClick={onLogout}
                   className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-rose-400 hover:bg-red-50 dark:hover:bg-rose-900/20 flex items-center gap-2 transition-colors font-medium">
-                  <LogOut size={16} /> Logout
+                  <LogOut size={16} /> {t('logout')}
                 </button>
               </div>
             </div>

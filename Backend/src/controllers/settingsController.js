@@ -30,6 +30,9 @@ const updateSettings = asyncHandler(async (req, res) => {
     if (updates.branding) {
         settings.branding = { ...settings.branding.toObject(), ...updates.branding };
     }
+    if (updates.localization) {
+        settings.localization = { ...(settings.localization?.toObject?.() || {}), ...updates.localization };
+    }
     if (updates.contactInfo) {
         const existingContact = settings.contactInfo.toObject();
         settings.contactInfo = {

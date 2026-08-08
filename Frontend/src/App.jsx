@@ -32,10 +32,12 @@ import UsersList from './pages/UsersList.jsx';
 import RolesPermissions from './pages/RolesPermissions.jsx';
 import ActivityLogs from './pages/ActivityLogs.jsx';
 import BusinessProfile from './pages/BusinessProfile.jsx';
+import SystemPreferences from './pages/settings/SystemPreferences.jsx';
 
 import { UserRole } from './types.js';
 import { NAV_CONFIG } from './constants.jsx';
 import { userHasPermission } from './utils/permissionUtils';
+import { useLanguage } from './i18n/LanguageContext.jsx';
 
 const RoleGuard = ({ children, currentRole, user }) => {
   const location = useLocation();
@@ -85,6 +87,7 @@ const RoleGuard = ({ children, currentRole, user }) => {
 };
 
 const App = () => {
+  const { t, setLanguage } = useLanguage();
   const [user, setUser] = useState(null);
   const [branches, setBranches] = useState([]);
   const [currentRole, setCurrentRole] = useState(null);
@@ -122,6 +125,9 @@ const App = () => {
         setCurrentRole(parsedUser.role || parsedUser.roles?.[0]?.name?.toUpperCase().replace(/ /g, '_'));
         fetchBranches();
         fetchTenantSettings();
+        api.get('/settings').then(({ data }) => {
+          if (data?.localization?.language) setLanguage(data.localization.language);
+        }).catch(() => {});
       } catch (e) {
         localStorage.removeItem('userInfo');
         setUser(null);
@@ -276,6 +282,7 @@ const App = () => {
                   <Route path="/access/roles" element={<RolesPermissions />} />
                   <Route path="/access/logs" element={<ActivityLogs />} />
                   <Route path="/settings/profile" element={<BusinessProfile />} />
+                  <Route path="/settings/preferences" element={<SystemPreferences />} />
 
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
@@ -283,7 +290,7 @@ const App = () => {
             </main>
 
             <footer className="py-4 px-8 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 text-xs text-center">
-              &copy; {new Date().getFullYear()} Institute Management System
+              &copy; {new Date().getFullYear()} {t('instituteManagement')}
             </footer>
           </div>
         </div>

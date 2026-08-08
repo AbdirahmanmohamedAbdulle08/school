@@ -14,6 +14,14 @@ const systemSettingsSchema = new mongoose.Schema({
         dateFormat: { type: String, default: 'DD/MM/YYYY' }
     },
 
+    // Application-wide localization defaults
+    localization: {
+        language: { type: String, enum: ['en', 'so'], default: 'en' },
+        timezone: { type: String, default: 'Africa/Mogadishu' },
+        currency: { type: String, default: 'USD' },
+        defaultTax: { type: Number, default: 0 }
+    },
+
     // Branding
     branding: {
         brandColor: { type: String, default: '#1E7A3C' },

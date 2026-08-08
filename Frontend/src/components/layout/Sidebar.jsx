@@ -5,8 +5,10 @@ import { NAV_CONFIG } from '../../constants.jsx';
 import { UserRole } from '../../types.js';
 import api from '../../services/api';
 import { userHasPermission } from '../../utils/permissionUtils';
+import { useLanguage } from '../../i18n/LanguageContext.jsx';
 
 const Sidebar = ({ user, userRole, isMobileOpen, setIsMobileOpen, onNavigate, onLogout }) => {
+  const { t } = useLanguage();
   const [expandedItems, setExpandedItems] = useState([]);
   const [lastExpandedItem, setLastExpandedItem] = useState(null);
   const [tenantInfo, setTenantInfo] = useState(() => {
@@ -126,7 +128,7 @@ const Sidebar = ({ user, userRole, isMobileOpen, setIsMobileOpen, onNavigate, on
         </div>
         <div className="overflow-hidden min-w-0">
           <span className="text-base font-black text-white tracking-tight block truncate" title={tenantInfo.name || 'Institute System'}>{tenantInfo.name || 'Institute System'}</span>
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300">Institute Management</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300">{t('instituteManagement')}</span>
         </div>
       </div>
 
@@ -157,7 +159,7 @@ const Sidebar = ({ user, userRole, isMobileOpen, setIsMobileOpen, onNavigate, on
                     {React.createElement(item.icon, { size: 20 })}
                   </div>
                   <span className="text-sm font-bold transition-colors duration-200">
-                    {item.label}
+                    {t(item.translationKey) || item.label}
                   </span>
                 </div>
                 {item.subItems && item.subItems.length > 0 && (
@@ -186,7 +188,7 @@ const Sidebar = ({ user, userRole, isMobileOpen, setIsMobileOpen, onNavigate, on
                         <div className={`w-5 flex justify-center transition-colors ${subActive ? 'text-emerald-300' : 'text-slate-600 group-hover:text-emerald-300'}`}>
                           {React.createElement(sub.icon, { size: 16 })}
                         </div>
-                        {sub.label}
+                        {t(sub.translationKey) || sub.label}
                       </button>
                     );
                   })}
@@ -214,7 +216,7 @@ const Sidebar = ({ user, userRole, isMobileOpen, setIsMobileOpen, onNavigate, on
           <div className="p-1.5 rounded-xl bg-white/7 group-hover:bg-rose-500/20 transition-colors">
             <LogOut size={18} />
           </div>
-          <span className="text-sm font-bold">Logout</span>
+          <span className="text-sm font-bold">{t('logout')}</span>
         </button>
       </div>
     </div>
