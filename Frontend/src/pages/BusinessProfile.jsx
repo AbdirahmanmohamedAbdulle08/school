@@ -169,6 +169,7 @@ const BusinessProfile = () => {
                     >
                       <option value="en">English</option>
                       <option value="so">Soomaali</option>
+                      <option value="ar">العربية</option>
                     </select>
                   </div>
                   <p className="text-[10px] text-slate-500">Select English or Soomaali to change the interface language.</p>

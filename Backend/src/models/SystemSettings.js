@@ -17,7 +17,7 @@ const systemSettingsSchema = new mongoose.Schema({
 
     // Application-wide localization defaults
     localization: {
-        language: { type: String, enum: ['en', 'so'], default: 'en' },
+        language: { type: String, enum: ['en', 'so', 'ar'], default: 'en' },
         timezone: { type: String, default: 'Africa/Mogadishu' },
         currency: { type: String, default: 'USD' },
         defaultTax: { type: Number, default: 0 }
