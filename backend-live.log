@@ -1,3 +1,5 @@
-MongoDB connection attempt 1/5...
-Server running on port 5005
-✓ MongoDB Connected: ac-bwgehtj-shard-00-02.ylagdft.mongodb.net
+
+> inventory-system-backend@1.0.0 start
+> node src/index.js
+
+MongoDB connection attempt 1/5 using mongodb+srv://Machad:Machad@cluster0.pcwzz7p.mongodb.net/institute_management_system...

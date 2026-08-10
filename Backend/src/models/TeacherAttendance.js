@@ -15,6 +15,15 @@ const teacherAttendanceSchema = new mongoose.Schema({
         enum: ['Present', 'Late', 'Absent'],
         default: 'Present'
     },
+    arrivalTime: {
+        type: String,
+        default: ''
+    },
+    remarks: {
+        type: String,
+        trim: true,
+        default: ''
+    },
     markedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

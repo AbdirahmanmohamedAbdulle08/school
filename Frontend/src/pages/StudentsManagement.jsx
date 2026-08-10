@@ -27,6 +27,7 @@ const StudentsManagement = () => {
     guardianId: '',
     guardianName: '',
     guardianPhone: '',
+    guardianAlternatePhone: '',
     guardianRelationship: 'Father'
   });
 
@@ -103,6 +104,7 @@ const StudentsManagement = () => {
       guardianId: '',
       guardianName: '',
       guardianPhone: '',
+      guardianAlternatePhone: '',
       guardianRelationship: 'Father'
     });
     setIsModalOpen(true);
@@ -123,6 +125,7 @@ const StudentsManagement = () => {
       guardianId: existingG?._id || item.guardianId || '',
       guardianName: existingG?.fullName || '',
       guardianPhone: existingG?.phone || '',
+      guardianAlternatePhone: existingG?.alternatePhone || '',
       guardianRelationship: existingG?.relationship || 'Father'
     });
     setIsModalOpen(true);
@@ -143,11 +146,20 @@ const StudentsManagement = () => {
         const guardianPayload = {
           fullName: formData.guardianName || formData.fatherName || 'Fee Payer',
           phone: formData.guardianPhone,
+          alternatePhone: formData.guardianAlternatePhone,
           relationship: formData.guardianRelationship || 'Father'
         };
 
         const guardianRes = await api.post('/guardians', guardianPayload);
         guardianId = guardianRes.data?._id || guardianRes.data?.id;
+      } else if (guardianId && formData.guardianPhone) {
+        // Keep both fee-payer phone numbers up to date when editing a student.
+        await api.put(`/guardians/${guardianId}`, {
+          fullName: formData.guardianName || formData.fatherName || 'Fee Payer',
+          phone: formData.guardianPhone,
+          alternatePhone: formData.guardianAlternatePhone,
+          relationship: formData.guardianRelationship || 'Father'
+        });
       }
 
       const payload = {
@@ -209,6 +221,7 @@ const StudentsManagement = () => {
       (item.fatherPhone || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       gName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       gPhone.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.guardianId?.alternatePhone || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       className.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
@@ -286,7 +299,7 @@ const StudentsManagement = () => {
                       {guardian ? (
                         <div>
                           <span className="font-bold text-slate-900 dark:text-slate-100">{guardian.fullName}</span>
-                          <span className="text-xs text-slate-400 block font-mono">{guardian.phone} ({guardian.relationship || 'Payer'})</span>
+                          <span className="text-xs text-slate-400 block font-mono">{guardian.phone}{guardian.alternatePhone ? ` / ${guardian.alternatePhone}` : ''} ({guardian.relationship || 'Payer'})</span>
                         </div>
                       ) : (
                         <span className="text-slate-400 opacity-60">Not Linked</span>
@@ -421,6 +434,17 @@ const StudentsManagement = () => {
                         <Loader2 className="animate-spin absolute right-3 top-3.5 text-slate-400" size={18} />
                       )}
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-black uppercase text-slate-500 mb-1">Fee Payer Second Phone Number</label>
+                    <input
+                      type="text"
+                      placeholder="Optional second phone number..."
+                      value={formData.guardianAlternatePhone}
+                      onChange={(e) => setFormData({ ...formData, guardianAlternatePhone: e.target.value })}
+                      className="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-slate-900 dark:text-white"
+                    />
                   </div>
 
                   <div>

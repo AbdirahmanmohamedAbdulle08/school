@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, CalendarCheck } from 'lucide-react';
+import { Plus, X, CalendarCheck, Pencil } from 'lucide-react';
 import api from '../services/api';
 import { useAlert } from '../components/common/alerts/useAlert';
 
@@ -9,13 +9,29 @@ const TeacherAttendanceManagement = () => {
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState(null);
 
   const [formData, setFormData] = useState({
     teacherId: '',
     date: new Date().toISOString().split('T')[0],
     status: 'Present',
+    arrivalTime: '',
     remarks: ''
   });
+
+  const getLateTimeLabel = (record) => {
+    if (record.arrivalTime) return record.arrivalTime;
+
+    // Older late records were stored before arrivalTime was introduced. Use
+    // their recorded timestamp as the displayed late time.
+    const recordedAt = record.updatedAt || record.createdAt;
+    if (!recordedAt) return 'Not recorded';
+
+    return new Date(recordedAt).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
 
   const fetchData = async () => {
     try {
@@ -39,11 +55,25 @@ const TeacherAttendanceManagement = () => {
   }, []);
 
   const openAddModal = () => {
+    setEditingRecord(null);
     setFormData({
       teacherId: teachers[0]?._id || '',
       date: new Date().toISOString().split('T')[0],
       status: 'Present',
+      arrivalTime: '',
       remarks: ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (record) => {
+    setEditingRecord(record);
+    setFormData({
+      teacherId: record.teacherId?._id || record.teacherId || '',
+      date: record.date || new Date().toISOString().split('T')[0],
+      status: record.status || 'Present',
+      arrivalTime: record.arrivalTime || '',
+      remarks: record.remarks || ''
     });
     setIsModalOpen(true);
   };
@@ -55,11 +85,25 @@ const TeacherAttendanceManagement = () => {
       return;
     }
 
+    if (formData.status === 'Late' && !formData.arrivalTime) {
+      showAlert({ type: 'warning', title: 'Validation Error', message: 'Please enter the arrival time for a late teacher.' });
+      return;
+    }
+
     try {
-      const res = await api.post('/teacher-attendance', formData);
-      setAttendanceRecords(prev => [res.data, ...prev]);
-      showAlert({ type: 'success', title: 'Recorded', message: 'Teacher attendance recorded successfully.' });
+      const payload = {
+        ...formData,
+        arrivalTime: formData.status === 'Late' ? formData.arrivalTime : ''
+      };
+      const res = editingRecord
+        ? await api.put(`/teacher-attendance/${editingRecord._id}`, payload)
+        : await api.post('/teacher-attendance', payload);
+      setAttendanceRecords(prev => editingRecord
+        ? prev.map(record => record._id === editingRecord._id ? res.data : record)
+        : [res.data, ...prev]);
+      showAlert({ type: 'success', title: editingRecord ? 'Updated' : 'Recorded', message: `Teacher attendance ${editingRecord ? 'updated' : 'recorded'} successfully.` });
       setIsModalOpen(false);
+      setEditingRecord(null);
       fetchData();
     } catch (error) {
       console.error("Failed to record teacher attendance", error);
@@ -99,7 +143,9 @@ const TeacherAttendanceManagement = () => {
                 <th className="px-8 py-5">Date</th>
                 <th className="px-8 py-5">Teacher Name</th>
                 <th className="px-8 py-5">Status</th>
+                <th className="px-8 py-5">Late Time</th>
                 <th className="px-8 py-5">Remarks</th>
+                <th className="px-8 py-5 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -115,15 +161,30 @@ const TeacherAttendanceManagement = () => {
                     <span className={`px-3 py-1 text-[10px] font-black uppercase rounded-full ${item.status === 'Present' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' : item.status === 'Late' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300'}`}>
                       {item.status}
                     </span>
+                    {item.status === 'Late' && (
+                      <p className="mt-2 text-xs font-bold text-amber-700 dark:text-amber-300">{getLateTimeLabel(item)}</p>
+                    )}
+                  </td>
+                  <td className="px-8 py-6 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                    {item.status === 'Late' ? getLateTimeLabel(item) : '-'}
                   </td>
                   <td className="px-8 py-6 text-sm font-semibold text-slate-500 dark:text-slate-400">
                     {item.remarks || '-'}
+                  </td>
+                  <td className="px-8 py-6 text-right">
+                    <button
+                      onClick={() => openEditModal(item)}
+                      className="inline-flex items-center gap-2 rounded-xl bg-brand-50 px-3 py-2 text-[10px] font-black uppercase tracking-wider text-brand-700 transition-colors hover:bg-brand-100 dark:bg-brand-500/15 dark:text-brand-300 dark:hover:bg-brand-500/25"
+                      title="Edit attendance record"
+                    >
+                      <Pencil size={14} /> Edit
+                    </button>
                   </td>
                 </tr>
               ))}
               {attendanceRecords.length === 0 && (
                 <tr>
-                  <td colSpan="4" className="px-8 py-10 text-center text-slate-400 text-sm font-medium">No teacher attendance recorded. Click "Record Teacher Attendance" to record.</td>
+                  <td colSpan="6" className="px-8 py-10 text-center text-slate-400 text-sm font-medium">No teacher attendance recorded. Click "Record Teacher Attendance" to record.</td>
                 </tr>
               )}
             </tbody>
@@ -137,7 +198,7 @@ const TeacherAttendanceManagement = () => {
           <div className="bg-white dark:bg-slate-900 rounded-[32px] p-8 max-w-lg w-full shadow-2xl border border-slate-100 dark:border-slate-800 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                Record Teacher Attendance
+                {editingRecord ? 'Edit Teacher Attendance' : 'Record Teacher Attendance'}
               </h2>
               <button onClick={() => setIsModalOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-full">
                 <X size={20} />
@@ -174,7 +235,7 @@ const TeacherAttendanceManagement = () => {
                   <label className="block text-xs font-black uppercase text-slate-500 mb-1">Attendance Status</label>
                   <select
                     value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value, arrivalTime: e.target.value === 'Late' ? formData.arrivalTime : '' })}
                     className="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-slate-900 dark:text-white"
                   >
                     <option value="Present">Present</option>
@@ -183,6 +244,19 @@ const TeacherAttendanceManagement = () => {
                   </select>
                 </div>
               </div>
+
+              {formData.status === 'Late' && (
+                <div>
+                  <label className="block text-xs font-black uppercase text-slate-500 mb-1">Late Arrival Time *</label>
+                  <input
+                    type="time"
+                    required
+                    value={formData.arrivalTime}
+                    onChange={(e) => setFormData({ ...formData, arrivalTime: e.target.value })}
+                    className="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-slate-900 dark:text-white"
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="block text-xs font-black uppercase text-slate-500 mb-1">Remarks</label>
@@ -207,7 +281,7 @@ const TeacherAttendanceManagement = () => {
                   type="submit"
                   className="px-6 py-3 rounded-xl bg-purple-600 text-white font-bold text-xs uppercase shadow-lg hover:bg-purple-700"
                 >
-                  Submit Attendance
+                  {editingRecord ? 'Save Changes' : 'Submit Attendance'}
                 </button>
               </div>
             </form>

@@ -59,6 +59,7 @@ const StudentAttendanceReport = () => {
 
   // 3. Class Report State
   const [selectedClassId, setSelectedClassId] = useState('');
+  const [selectedLedgerStudentId, setSelectedLedgerStudentId] = useState('all');
 
   // 4. Individual Student Search State
   const [studentSearchQuery, setStudentSearchQuery] = useState('');
@@ -239,7 +240,7 @@ const StudentAttendanceReport = () => {
 
     const totalMarked = stats.present + stats.late + stats.absent;
     if (totalMarked > 0) {
-      stats.percentage = Math.round(((stats.present + stats.late) / totalMarked) * 100);
+      stats.percentage = Math.round((stats.present / totalMarked) * 100);
     }
 
     return { stats, filteredRecs };
@@ -304,6 +305,17 @@ const StudentAttendanceReport = () => {
   // ==========================================
   // 3. CLASS REPORT CALCULATIONS
   // ==========================================
+  // Keep the ledger student selector scoped to the academic class currently
+  // selected above it.
+  const ledgerStudents = useMemo(() => {
+    if (!selectedClassId) return [];
+
+    return students.filter(student => {
+      const classId = student.classId?._id || student.classId;
+      return String(classId) === String(selectedClassId);
+    });
+  }, [students, selectedClassId]);
+
   const classReportData = useMemo(() => {
     if (!selectedClassId) return { studentsList: [], stats: { present: 0, late: 0, absent: 0, percentage: 100 } };
 
@@ -311,7 +323,7 @@ const StudentAttendanceReport = () => {
     const classStudents = students.filter(s => {
       const cId = s.classId?._id || s.classId;
       return String(cId) === String(selectedClassId);
-    });
+    }).filter(s => selectedLedgerStudentId === 'all' || String(s._id) === String(selectedLedgerStudentId));
 
     const stats = { present: 0, late: 0, absent: 0, percentage: 100 };
 
@@ -329,7 +341,9 @@ const StudentAttendanceReport = () => {
       });
 
       const total = counts.present + counts.late + counts.absent;
-      const rate = total > 0 ? Math.round(((counts.present + counts.late) / total) * 100) : 100;
+      // Late and absent records both affect performance. The rate is the
+      // percentage of all marked days that were recorded as Present.
+      const rate = total > 0 ? Math.round((counts.present / total) * 100) : 0;
 
       return {
         student,
@@ -340,11 +354,11 @@ const StudentAttendanceReport = () => {
 
     const grandTotal = stats.present + stats.late + stats.absent;
     if (grandTotal > 0) {
-      stats.percentage = Math.round(((stats.present + stats.late) / grandTotal) * 100);
+      stats.percentage = Math.round((stats.present / grandTotal) * 100);
     }
 
     return { studentsList, stats };
-  }, [selectedClassId, students, allAttendance]);
+  }, [selectedClassId, selectedLedgerStudentId, students, allAttendance]);
 
   // ==========================================
   // 4. INDIVIDUAL REPORT CALCULATIONS
@@ -375,7 +389,7 @@ const StudentAttendanceReport = () => {
     });
 
     if (stats.total > 0) {
-      stats.percentage = Math.round(((stats.present + stats.late) / stats.total) * 100);
+      stats.percentage = Math.round((stats.present / stats.total) * 100);
     }
 
     // Warnings Logic
@@ -908,13 +922,17 @@ const StudentAttendanceReport = () => {
           
           {/* Class selector control panel */}
           <div className="bg-white dark:bg-slate-900 rounded-[32px] p-6 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="flex-1 max-w-md">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <div>
               <label className="block text-xs font-black uppercase text-slate-500 mb-2 flex items-center gap-2">
                 <BookOpen size={14} className="text-brand-500" /> Select Academic Class
               </label>
               <select
                 value={selectedClassId}
-                onChange={(e) => setSelectedClassId(e.target.value)}
+                onChange={(e) => {
+                  setSelectedClassId(e.target.value);
+                  setSelectedLedgerStudentId('all');
+                }}
                 className="w-full px-4 py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-slate-900 dark:text-white font-bold text-sm"
               >
                 <option value="">Select class to audit...</option>
@@ -922,6 +940,28 @@ const StudentAttendanceReport = () => {
                   <option key={c._id} value={c._id}>{c.name}</option>
                 ))}
               </select>
+              </div>
+              <div>
+                <label className="block text-xs font-black uppercase text-slate-500 mb-2 flex items-center gap-2">
+                  <User size={14} className="text-brand-500" /> Student in Attendance Ledger
+                </label>
+                <select
+                  value={selectedLedgerStudentId}
+                  onChange={(e) => {
+                    const studentId = e.target.value;
+                    setSelectedLedgerStudentId(studentId);
+                  }}
+                  disabled={!selectedClassId}
+                  className="w-full px-4 py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-slate-900 dark:text-white font-bold text-sm"
+                >
+                  <option value="all">All Students in Selected Class</option>
+                  {ledgerStudents.map(student => (
+                    <option key={student._id} value={student._id}>
+                      {student.fullName} — {student.studentCode || student.rollNumber || 'No code'}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* Export options */}
@@ -979,7 +1019,7 @@ const StudentAttendanceReport = () => {
 
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-black uppercase text-slate-400 tracking-wider">Class Attendance Rate</p>
+                    <p className="text-xs font-black uppercase text-slate-400 tracking-wider">Performance Rate</p>
                     <h3 className="text-2xl font-black text-slate-950 dark:text-white mt-2">{classReportData.stats.percentage}%</h3>
                   </div>
                   <div className="w-10 h-10 bg-brand-50 dark:bg-brand-950/40 text-brand-600 rounded-xl flex items-center justify-center">
@@ -990,6 +1030,9 @@ const StudentAttendanceReport = () => {
 
               {/* Class students list table */}
               <div className="bg-white dark:bg-slate-900 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+                <div className="px-8 py-4 border-b border-slate-100 dark:border-slate-800 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Performance Rate = Present ÷ (Present + Late + Absent). Late and absent records are included in the database totals.
+                </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
                     <thead>

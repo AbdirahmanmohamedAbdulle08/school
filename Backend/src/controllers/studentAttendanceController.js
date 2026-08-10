@@ -38,9 +38,10 @@ const checkAndTriggerWarnings = async (studentId) => {
 };
 
 const getStudentAttendances = asyncHandler(async (req, res) => {
-    const { classId, date, session, startDate, endDate } = req.query;
+    const { classId, studentId, date, session, startDate, endDate } = req.query;
     const query = {};
     if (classId) query.classId = classId;
+    if (studentId) query.studentId = studentId;
     if (session) query.session = session;
     
     if (date) {
@@ -57,7 +58,20 @@ const getStudentAttendances = asyncHandler(async (req, res) => {
         .populate('classId')
         .populate('markedBy', 'fullName email')
         .sort({ date: -1, createdAt: -1 });
-    res.json(data);
+
+    // Older versions allowed duplicate submissions for the same daily register.
+    // Return only the newest record for each student/date/session so every screen
+    // calculates the same, correct attendance totals while old data is retained.
+    const latestRecords = [];
+    const seen = new Set();
+    for (const record of data) {
+        const key = `${record.studentId?._id || record.studentId}:${record.date}:${record.session || 'Morning'}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            latestRecords.push(record);
+        }
+    }
+    res.json(latestRecords);
 });
 
 const getStudentAttendanceById = asyncHandler(async (req, res) => {
@@ -81,19 +95,28 @@ const createStudentAttendance = asyncHandler(async (req, res) => {
         const { studentId, classId, date, status, session, arrivalTime } = item;
         if (!studentId || !classId || !date) continue;
 
-        // Requirement 10: Always create a new attendance record instead of replacing
-        const created = await StudentAttendance.create({
-            studentId,
-            classId,
-            date,
-            status: status || 'Present',
-            session: session || 'Morning',
-            arrivalTime: status === 'Late' ? (arrivalTime || '08:30') : '',
-            markedBy: req.user?._id
-        });
+        const attendanceSession = session || 'Morning';
+        const nextStatus = status || 'Present';
+        const existing = await StudentAttendance.findOne({ studentId, date, session: attendanceSession });
+        const created = await StudentAttendance.findOneAndUpdate(
+            { studentId, date, session: attendanceSession },
+            {
+                $set: {
+                    classId,
+                    status: nextStatus,
+                    arrivalTime: nextStatus === 'Late' ? (arrivalTime || '08:30') : '',
+                    markedBy: req.user?._id
+                },
+                $setOnInsert: { studentId, date, session: attendanceSession }
+            },
+            { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
 
-        // Trigger warning check
-        await checkAndTriggerWarnings(studentId);
+        // A warning is meaningful only when a new daily record is created or its
+        // status changes, not every time a teacher re-saves the class register.
+        if (!existing || existing.status !== nextStatus) {
+            await checkAndTriggerWarnings(studentId);
+        }
 
         results.push(created);
     }

@@ -13,6 +13,11 @@ const guardianSchema = new mongoose.Schema({
         unique: true,
         index: true
     },
+    alternatePhone: {
+        type: String,
+        trim: true,
+        default: ''
+    },
     address: {
         type: String,
         trim: true
