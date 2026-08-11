@@ -35,16 +35,35 @@ const studentAttendanceSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-// Allow multiple records per student per day per session to keep permanent history
-studentAttendanceSchema.index({ studentId: 1, date: 1, session: 1 });
+// Allow separate Morning, Breakfast, and Evening entries on the same date.
+studentAttendanceSchema.index({ studentId: 1, date: -1, session: 1, createdAt: -1 });
 
-// Programmatically drop the unique index if it exists
-mongoose.connection.on('connected', async () => {
+const StudentAttendance = mongoose.model('StudentAttendance', studentAttendanceSchema);
+
+// A previous version created a unique { studentId, date } index. That index
+// prevents additional sessions from being saved and causes E11000 errors.
+StudentAttendance.removeLegacyDailyUniqueIndex = async () => {
+    let indexes = [];
     try {
-        await mongoose.connection.db.collection('studentattendances').dropIndex('studentId_1_date_1_session_1');
-    } catch (e) {
-        // Silence errors if index doesn't exist
+        indexes = await StudentAttendance.collection.indexes();
+    } catch (error) {
+        // A fresh database has no collection or indexes yet.
+        if (error.code !== 26) throw error;
     }
-});
 
-module.exports = mongoose.model('StudentAttendance', studentAttendanceSchema);
+    const legacyIndex = indexes.find(index =>
+        index.unique &&
+        index.key?.studentId === 1 &&
+        index.key?.date === 1 &&
+        Object.keys(index.key).length === 2
+    );
+
+    if (legacyIndex) {
+        await StudentAttendance.collection.dropIndex(legacyIndex.name);
+        console.log('Removed legacy student attendance daily unique index.');
+    }
+
+    await StudentAttendance.createIndexes();
+};
+
+module.exports = StudentAttendance;

@@ -2,7 +2,7 @@ const asyncHandler = require('../middleware/asyncHandler');
 const TeacherAttendance = require('../models/TeacherAttendance');
 
 const getTeacherAttendances = asyncHandler(async (req, res) => {
-    const data = await TeacherAttendance.find();
+    const data = await TeacherAttendance.find().sort({ date: -1, createdAt: -1 });
     res.json(data);
 });
 

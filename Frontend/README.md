@@ -17,4 +17,8 @@ View your app in AI Studio: https://ai.studio/apps/drive/1qNrp0d6R9g8Z1qUSXEX76B
    `npm install`
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
-   `npm run dev`
+   `npm start`
+
+   The frontend is available on port `3005`. To open it from another device on
+   the same network, use this computer's LAN IP address, for example:
+   `http://192.168.1.100:3005`.

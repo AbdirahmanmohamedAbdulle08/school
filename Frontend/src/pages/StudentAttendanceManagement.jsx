@@ -1,334 +1,138 @@
-import React, { useState, useEffect } from 'react';
-import { CalendarCheck, Clock, Save, Calendar, BookOpen } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { AlertCircle, BookOpen, Calendar, CalendarCheck, Clock, Plus, Users, X } from 'lucide-react';
 import api from '../services/api';
 import { useAlert } from '../components/common/alerts/useAlert';
+
+const today = () => new Date().toISOString().split('T')[0];
+const emptyEntry = () => ({ studentId: '', status: 'Absent', arrivalTime: '' });
 
 const StudentAttendanceManagement = () => {
   const { showAlert } = useAlert();
   const [classes, setClasses] = useState([]);
   const [students, setStudents] = useState([]);
+  const [records, setRecords] = useState([]);
   const [selectedClassId, setSelectedClassId] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [attendanceData, setAttendanceData] = useState({});
+  const [selectedDate, setSelectedDate] = useState(today());
+  const [selectedSession, setSelectedSession] = useState('Morning');
+  const [entry, setEntry] = useState(emptyEntry());
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [loadingRecords, setLoadingRecords] = useState(false);
+  const [adding, setAdding] = useState(false);
 
-  const formattedDate = new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', {
-    weekday: 'short',
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  });
-
-  const fetchInitialData = async () => {
-    try {
-      setLoading(true);
-      const [resClasses, resStudents] = await Promise.all([
-        api.get('/classes'),
-        api.get('/students')
-      ]);
-
-      const classList = resClasses.data || [];
-      const studentList = resStudents.data || [];
-
-      setClasses(classList);
-      setStudents(studentList);
-
-      if (classList.length > 0) {
-        setSelectedClassId(classList[0]._id);
-      }
-    } catch (error) {
-      console.error("Failed to fetch attendance initial data", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const classStudents = useMemo(() => students.filter(student => String(student.classId?._id || student.classId) === String(selectedClassId)), [students, selectedClassId]);
+  const selectedClassName = classes.find(item => String(item._id) === String(selectedClassId))?.name || '';
+  const exceptionRecords = useMemo(() => records.filter(record => record.status === 'Late' || record.status === 'Absent'), [records]);
 
   useEffect(() => {
-    fetchInitialData();
-  }, []);
-
-  // Whenever selectedClassId or selectedDate changes, load students & existing attendance for selected date
-  useEffect(() => {
-    if (!selectedClassId) return;
-
-    const loadClassAttendance = async () => {
+    const loadInitialData = async () => {
       try {
-        const resAttendance = await api.get(`/student-attendance?classId=${selectedClassId}&date=${selectedDate}`);
-        const existingRecords = resAttendance.data || [];
-        const recordMap = {};
-        existingRecords.forEach(rec => {
-          const sId = rec.studentId?._id || rec.studentId;
-          if (sId && !recordMap[sId]) {
-            recordMap[sId] = {
-              status: rec.status || 'Present',
-              session: rec.session || 'Morning',
-              arrivalTime: rec.arrivalTime || ''
-            };
-          }
-        });
-
-        // Get students in selected class
-        const classStudents = students.filter(s => {
-          const cId = s.classId?._id || s.classId;
-          return String(cId) === String(selectedClassId);
-        });
-
-        const initialMap = {};
-        classStudents.forEach(s => {
-          if (recordMap[s._id]) {
-            initialMap[s._id] = recordMap[s._id];
-          } else {
-            initialMap[s._id] = {
-              status: 'Present',
-              session: 'Morning',
-              arrivalTime: ''
-            };
-          }
-        });
-
-        setAttendanceData(initialMap);
-      } catch (err) {
-        console.error('Failed to load class attendance', err);
+        setLoading(true);
+        const [classResponse, studentResponse] = await Promise.all([api.get('/classes'), api.get('/students')]);
+        setClasses(classResponse.data || []);
+        setStudents(studentResponse.data || []);
+      } catch (error) {
+        console.error('Failed to load attendance data', error);
+        showAlert({ type: 'danger', title: 'Unable to load attendance', message: 'Please refresh the page and try again.' });
+      } finally {
+        setLoading(false);
       }
     };
+    loadInitialData();
+  }, [showAlert]);
 
-    loadClassAttendance();
-  }, [selectedClassId, selectedDate, students]);
+  useEffect(() => {
+    setEntry(emptyEntry());
+  }, [selectedClassId, selectedDate, selectedSession]);
 
-  const handleStatusChange = (studentId, newStatus) => {
-    setAttendanceData(prev => {
-      const prevAtt = prev[studentId] || {};
-      const newArrivalTime = newStatus === 'Late' 
-        ? (prevAtt.arrivalTime && prevAtt.arrivalTime !== '-' ? prevAtt.arrivalTime : '08:30 AM') 
-        : '';
-      return {
-        ...prev,
-        [studentId]: {
-          ...prevAtt,
-          status: newStatus,
-          arrivalTime: newArrivalTime
-        }
-      };
-    });
-  };
-
-  const handleSessionChangeForStudent = (studentId, newSession) => {
-    setAttendanceData(prev => ({
-      ...prev,
-      [studentId]: {
-        ...prev[studentId],
-        session: newSession
-      }
-    }));
-  };
-
-  const handleArrivalTimeChange = (studentId, timeVal) => {
-    setAttendanceData(prev => ({
-      ...prev,
-      [studentId]: {
-        ...prev[studentId],
-        arrivalTime: timeVal
-      }
-    }));
-  };
-
-  const classStudents = students.filter(s => {
-    const cId = s.classId?._id || s.classId;
-    return String(cId) === String(selectedClassId);
-  });
-
-  const handleSaveAttendance = async () => {
+  useEffect(() => {
     if (!selectedClassId) {
-      showAlert({ type: 'warning', title: 'Select Class', message: 'Please select a class first.' });
+      setRecords([]);
       return;
     }
 
-    if (classStudents.length === 0) {
-      showAlert({ type: 'info', title: 'No Students', message: 'No students found in the selected class.' });
+    const loadExceptions = async () => {
+      try {
+        setLoadingRecords(true);
+        const response = await api.get('/student-attendance', {
+          params: { classId: selectedClassId, date: selectedDate, session: selectedSession }
+        });
+        setRecords(response.data || []);
+      } catch (error) {
+        console.error('Failed to load attendance exceptions', error);
+        showAlert({ type: 'danger', title: 'Unable to load records', message: 'Please try again.' });
+      } finally {
+        setLoadingRecords(false);
+      }
+    };
+    loadExceptions();
+  }, [selectedClassId, selectedDate, selectedSession, showAlert]);
+
+  const addException = async () => {
+    if (!entry.studentId) {
+      showAlert({ type: 'warning', title: 'Select a student', message: 'Choose the student who is absent or late.' });
+      return;
+    }
+    if (entry.status === 'Late' && !entry.arrivalTime) {
+      showAlert({ type: 'warning', title: 'Late time required', message: 'Enter the student\'s arrival time.' });
       return;
     }
 
     try {
-      setSaving(true);
-      const payload = classStudents.map(student => {
-        const att = attendanceData[student._id] || { status: 'Present', session: 'Morning', arrivalTime: '' };
-        return {
-          studentId: student._id,
-          classId: selectedClassId,
-          date: selectedDate,
-          status: att.status,
-          session: att.session || 'Morning',
-          arrivalTime: att.status === 'Late' ? (att.arrivalTime || '08:30 AM') : ''
-        };
+      setAdding(true);
+      const response = await api.post('/student-attendance', {
+        studentId: entry.studentId,
+        classId: selectedClassId,
+        date: selectedDate,
+        session: selectedSession,
+        status: entry.status,
+        arrivalTime: entry.status === 'Late' ? entry.arrivalTime : ''
       });
-
-      await api.post('/student-attendance', payload);
-      const selectedClassName = classes.find(c => String(c._id) === String(selectedClassId))?.name || 'Class';
-      showAlert({
-        type: 'success',
-        title: 'Attendance Saved',
-        message: `Attendance for ${selectedClassName} saved for ${formattedDate} (${selectedDate}).`
-      });
+      const savedRecord = response.data;
+      setRecords(previous => [...previous.filter(record => String(record.studentId?._id || record.studentId) !== String(entry.studentId)), savedRecord]);
+      setEntry(emptyEntry());
+      showAlert({ type: 'success', title: 'Attendance added', message: `The ${entry.status.toLowerCase()} record was added to the database.` });
     } catch (error) {
-      console.error('Failed to save attendance', error);
-      showAlert({ type: 'danger', title: 'Error', message: error.response?.data?.message || 'Failed to save attendance.' });
+      console.error('Failed to add attendance exception', error);
+      showAlert({ type: 'danger', title: 'Could not add attendance', message: error.response?.data?.message || 'Please try again.' });
     } finally {
-      setSaving(false);
+      setAdding(false);
     }
   };
 
   if (loading) return <div className="p-10 text-center text-slate-500">Loading Student Attendance...</div>;
 
   return (
-    <div className="p-6 space-y-8 max-w-[1600px] mx-auto animate-in fade-in duration-700 pb-24">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 px-2">
-        <div className="flex items-center gap-6">
-          <div className="w-16 h-16 bg-slate-900 dark:bg-slate-800 rounded-[24px] flex items-center justify-center text-brand-400 shadow-2xl border border-slate-700 ring-4 ring-brand-400/10">
-            <CalendarCheck size={32} strokeWidth={2.5} />
-          </div>
-          <div>
-            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-none">Student Attendance</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-[10px] font-black mt-2 uppercase tracking-[0.2em] opacity-80">Class Attendance Register</p>
-          </div>
-        </div>
-
-        <button
-          onClick={handleSaveAttendance}
-          disabled={saving || classStudents.length === 0}
-          className="flex items-center gap-3 px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[20px] font-black text-[11px] uppercase tracking-[0.2em] shadow-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Save size={18} strokeWidth={3} /> {saving ? 'Saving...' : 'Save Class Attendance'}
-        </button>
-      </div>
-
-      {/* Top Controls: Class Selection & Attendance Date */}
-      <div className="bg-white dark:bg-slate-900 rounded-[32px] p-6 border border-slate-100 dark:border-slate-800 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        {/* Class Selection Dropdown */}
+    <div className="mx-auto max-w-6xl space-y-8 p-6 pb-24 animate-in fade-in duration-700">
+      <div className="flex items-center gap-5 px-2">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] border border-slate-700 bg-slate-900 text-brand-400 shadow-2xl ring-4 ring-brand-400/10 dark:bg-slate-800"><CalendarCheck size={32} strokeWidth={2.5} /></div>
         <div>
-          <label className="block text-xs font-black uppercase text-slate-500 mb-2 flex items-center gap-2">
-            <BookOpen size={14} className="text-brand-500" /> Select Class *
-          </label>
-          <select
-            value={selectedClassId}
-            onChange={(e) => setSelectedClassId(e.target.value)}
-            className="w-full px-4 py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-slate-900 dark:text-white font-bold text-sm"
-          >
-            {classes.length === 0 && <option value="">No Classes Found</option>}
-            {classes.map(c => (
-              <option key={c._id} value={c._id}>{c.name}</option>
-            ))}
-          </select>
+          <h1 className="text-4xl font-black uppercase leading-none tracking-tight text-slate-900 dark:text-white">Student Attendance</h1>
+          <p className="mt-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Add absent and late students only</p>
         </div>
+      </div>
 
-        {/* Editable Attendance Date Selector */}
-        <div>
-          <label className="block text-xs font-black uppercase text-slate-500 mb-2 flex items-center gap-2">
-            <Calendar size={14} className="text-emerald-500" /> Attendance Date
-          </label>
-          <div className="flex items-center gap-3">
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold text-sm outline-none cursor-pointer"
-            />
-            <span className="text-xs font-bold text-slate-500">{formattedDate}</span>
+      <section className="grid grid-cols-1 gap-5 rounded-[32px] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:grid-cols-3">
+        <div><label className="mb-2 flex items-center gap-2 text-xs font-black uppercase text-slate-500"><BookOpen size={14} className="text-brand-500" /> Class</label><select value={selectedClassId} onChange={event => setSelectedClassId(event.target.value)} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-bold text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"><option value="">Select class...</option>{classes.map(item => <option key={item._id} value={item._id}>{item.name}</option>)}</select></div>
+        <div><label className="mb-2 flex items-center gap-2 text-xs font-black uppercase text-slate-500"><Calendar size={14} className="text-emerald-500" /> Date</label><input type="date" value={selectedDate} onChange={event => setSelectedDate(event.target.value)} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-bold text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white" /></div>
+        <div><label className="mb-2 flex items-center gap-2 text-xs font-black uppercase text-slate-500"><Clock size={14} className="text-amber-500" /> Session</label><select value={selectedSession} onChange={event => setSelectedSession(event.target.value)} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-bold text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"><option value="Morning">Morning</option><option value="Breakfast">Breakfast</option><option value="Evening">Evening</option></select></div>
+      </section>
+
+      {selectedClassId && <>
+        <section className="rounded-[32px] border border-brand-100 bg-gradient-to-br from-brand-50 to-white p-6 shadow-sm dark:border-brand-500/20 dark:from-brand-500/10 dark:to-slate-900">
+          <div className="mb-5"><p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-600 dark:text-brand-300">Attendance exception</p><h2 className="mt-1 text-xl font-black text-slate-900 dark:text-white">Add an absent or late student</h2><p className="mt-1 text-xs font-semibold text-slate-500">Present students do not need a record. This adds only the selected absence or lateness to the database.</p></div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr_1fr_auto] lg:items-end">
+            <div><label className="mb-2 block text-[10px] font-black uppercase tracking-wider text-slate-500">Student</label><select value={entry.studentId} onChange={event => setEntry(previous => ({ ...previous, studentId: event.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"><option value="">Select a student...</option>{classStudents.map(student => <option key={student._id} value={student._id}>{student.fullName} — {student.rollNumber || student.studentCode || 'No ID'}</option>)}</select></div>
+            <div><label className="mb-2 block text-[10px] font-black uppercase tracking-wider text-slate-500">Status</label><select value={entry.status} onChange={event => setEntry(previous => ({ ...previous, status: event.target.value, arrivalTime: event.target.value === 'Late' ? previous.arrivalTime : '' }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"><option value="Absent">Absent</option><option value="Late">Late</option></select></div>
+            <div><label className="mb-2 block text-[10px] font-black uppercase tracking-wider text-slate-500">Arrival time</label>{entry.status === 'Late' ? <input type="time" value={entry.arrivalTime} onChange={event => setEntry(previous => ({ ...previous, arrivalTime: event.target.value }))} className="w-full rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800 outline-none dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-300" /> : <div className="rounded-2xl border border-dashed border-slate-200 bg-white/70 px-4 py-3 text-sm font-semibold text-slate-400 dark:border-slate-700 dark:bg-slate-800/70">Not needed for absent</div>}</div>
+            <button type="button" onClick={addException} disabled={adding || !entry.studentId} className="flex items-center justify-center gap-2 rounded-2xl bg-brand-600 px-5 py-3.5 text-[10px] font-black uppercase tracking-wider text-white shadow-lg transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"><Plus size={16} strokeWidth={3} /> {adding ? 'Adding...' : 'Add record'}</button>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Attendance Form Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-slate-50/50 dark:bg-slate-800/30 text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
-                <th className="px-8 py-5">Student Name</th>
-                <th className="px-8 py-5">Attendance Status</th>
-                <th className="px-8 py-5">Session</th>
-                <th className="px-8 py-5">Arrival Time</th>
-                <th className="px-8 py-5">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {classStudents.map((student) => {
-                const att = attendanceData[student._id] || { status: 'Present', session: 'Morning', arrivalTime: '' };
-                const isLate = att.status === 'Late';
-
-                return (
-                  <tr key={student._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors">
-                    <td className="px-8 py-6 text-sm font-bold text-slate-900 dark:text-slate-100">
-                      <div>{student.fullName}</div>
-                      <div className="text-xs text-slate-400 font-normal font-mono">ID: {student.rollNumber || student.studentCode || '-'}</div>
-                    </td>
-
-                    <td className="px-8 py-6">
-                      <select
-                        value={att.status}
-                        onChange={(e) => handleStatusChange(student._id, e.target.value)}
-                        className={`px-4 py-2.5 rounded-2xl font-bold text-xs outline-none border transition-all cursor-pointer ${
-                          att.status === 'Present'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800'
-                            : att.status === 'Late'
-                            ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800'
-                            : 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800'
-                        }`}
-                      >
-                        <option value="Present">✓ Present</option>
-                        <option value="Late">⏰ Late</option>
-                        <option value="Absent">✖ Absent</option>
-                      </select>
-                    </td>
-
-                    <td className="px-8 py-6">
-                      <select
-                        value={att.session || 'Morning'}
-                        onChange={(e) => handleSessionChangeForStudent(student._id, e.target.value)}
-                        className="px-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 outline-none cursor-pointer"
-                      >
-                        <option value="Morning">Morning</option>
-                        <option value="Breakfast">Breakfast</option>
-                        <option value="Evening">Evening</option>
-                      </select>
-                    </td>
-
-                    <td className="px-8 py-6">
-                      {isLate ? (
-                        <div className="flex items-center gap-2">
-                          <Clock size={16} className="text-amber-500 shrink-0" />
-                          <input
-                            type="text"
-                            placeholder="e.g. 08:35 AM"
-                            value={att.arrivalTime || ''}
-                            onChange={(e) => handleArrivalTimeChange(student._id, e.target.value)}
-                            className="w-32 px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-800 dark:text-amber-300 font-mono outline-none"
-                          />
-                        </div>
-                      ) : (
-                        <span className="text-slate-400 opacity-40">-</span>
-                      )}
-                    </td>
-
-                    <td className="px-8 py-6 text-sm font-semibold text-slate-500 dark:text-slate-400 font-mono">
-                      {selectedDate}
-                    </td>
-                  </tr>
-                );
-              })}
-
-              {classStudents.length === 0 && (
-                <tr>
-                  <td colSpan="5" className="px-8 py-12 text-center text-slate-400 text-sm font-medium">
-                    {selectedClassId ? 'No students registered in this class.' : 'Please select a class above to load students.'}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+        <section className="overflow-hidden rounded-[32px] border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex items-center gap-3 border-b border-slate-100 px-6 py-5 dark:border-slate-800"><AlertCircle className="text-amber-500" size={20} /><div><h2 className="font-black text-slate-900 dark:text-white">Recorded exceptions{selectedClassName ? ` — ${selectedClassName}` : ''}</h2><p className="mt-1 text-xs font-semibold text-slate-500">Absent and late students saved for this date and session.</p></div></div>
+          {loadingRecords ? <div className="p-10 text-center text-sm font-semibold text-slate-400">Loading records...</div> : <div className="overflow-x-auto"><table className="w-full text-left"><thead><tr className="border-b border-slate-100 bg-slate-50/70 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:border-slate-800 dark:bg-slate-800/30"><th className="px-7 py-4">Student</th><th className="px-7 py-4">Status</th><th className="px-7 py-4">Arrival time</th></tr></thead><tbody className="divide-y divide-slate-100 dark:divide-slate-800">{exceptionRecords.map(record => <tr key={record._id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/20"><td className="px-7 py-5 font-bold text-slate-900 dark:text-white">{record.studentId?.fullName || 'Student'}</td><td className="px-7 py-5"><span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase ${record.status === 'Late' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}`}>{record.status}</span></td><td className="px-7 py-5 text-sm font-semibold text-slate-500">{record.arrivalTime || '—'}</td></tr>)}{!exceptionRecords.length && <tr><td colSpan="3" className="px-7 py-12 text-center text-sm font-semibold text-slate-400">No absent or late students recorded.</td></tr>}</tbody></table></div>}
+        </section>
+      </>}
     </div>
   );
 };

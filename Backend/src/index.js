@@ -35,8 +35,14 @@ const seedAdminUser = async () => {
     }
 };
 
-connectDB().then(() => {
-    seedAdminUser();
+connectDB().then(async () => {
+    const TeacherAttendance = require('./models/TeacherAttendance');
+    const StudentAttendance = require('./models/StudentAttendance');
+    await Promise.all([
+        TeacherAttendance.removeLegacyDailyUniqueIndex(),
+        StudentAttendance.removeLegacyDailyUniqueIndex()
+    ]);
+    await seedAdminUser();
 }).catch(err => {
     console.error('Failed to connect to MongoDB on startup. The server will start, but DB operations will fail until connection is established:', err.message);
 });
@@ -92,6 +98,6 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5005; // Was 5005 in .env
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
