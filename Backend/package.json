@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "seed:admin": "node src/seed-admin.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.11.5",

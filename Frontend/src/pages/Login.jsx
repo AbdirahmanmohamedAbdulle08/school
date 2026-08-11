@@ -16,11 +16,9 @@ const Login = ({ onLogin }) => {
     setError('');
     try {
       const { data } = await api.post('/users/login', formData);
+      localStorage.setItem('userInfo', JSON.stringify(data));
       if (onLogin) onLogin(data);
-      else {
-        localStorage.setItem('userInfo', JSON.stringify(data));
-        navigate('/');
-      }
+      navigate('/', { replace: true });
     } catch (err) {
       setError('Gelitaanku wuu fashilmay. Hubi iimaylkaaga iyo furaha sirta, kadibna isku day mar kale.');
       console.error('Login error:', err);
