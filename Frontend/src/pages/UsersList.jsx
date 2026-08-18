@@ -64,6 +64,13 @@ const UsersList = () => {
     setIsModalOpen(true);
   };
 
+  const handleRoleChange = (selectedRoleId) => {
+    setFormData((prev) => ({
+      ...prev,
+      roles: selectedRoleId ? [selectedRoleId] : []
+    }));
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     try {
@@ -340,6 +347,35 @@ const UsersList = () => {
                   <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-2">Password {editingUser && '(Leave empty to keep)'}</label>
                   <input type="password" required={!editingUser} placeholder="••••••••" className="w-full px-5 py-4 bg-white dark:bg-slate-800 rounded-[20px] font-bold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all shadow-sm" value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} />
                 </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-2">Status</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    className="w-full px-5 py-4 bg-white dark:bg-slate-800 rounded-[20px] font-bold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all shadow-sm"
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-2">Role</label>
+                {availableRoles.length > 0 ? (
+                  <select
+                    value={formData.roles[0] || ''}
+                    onChange={(e) => handleRoleChange(e.target.value)}
+                    className="w-full px-5 py-4 bg-white dark:bg-slate-800 rounded-[20px] font-bold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all shadow-sm"
+                  >
+                    <option value="">Select role</option>
+                    {availableRoles.map((role) => (
+                      <option key={role._id} value={role._id}>{role.name}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <p className="text-sm text-slate-500 dark:text-slate-400">No roles available yet. Create roles first in the Roles & Permissions section.</p>
+                )}
               </div>
 
               <div className="flex items-center justify-end gap-4 pt-6 border-t border-slate-200/60 dark:border-slate-800/60">
