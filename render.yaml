@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: school-backend
+    runtime: node
+    plan: free
+    rootDir: Backend
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: PORT
+        value: 5005
+      - key: MONGO_URI
+        value: mongodb+srv://abdirahmanmohamedabdulle08_db_user:Hl8CPd6i5P4jUpxL@cluster0.tkrjnos.mongodb.net/school_db?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        value: rrtttyyyuuuyyhhhhggtt_yy_ytytrrffff
+      - key: ADMIN_EMAIL
+        value: abdirahmanmohamedabdulle08@gmail.com
+      - key: ADMIN_PASSWORD
+        value: Machad!Admin2026#
+      - key: ADMIN_NAME
+        value: Abdirahman Mohamed Abdulle
+      - key: FRONTEND_URL
+        value: "*"
