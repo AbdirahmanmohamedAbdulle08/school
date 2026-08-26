@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Eye, EyeOff, GraduationCap, Lock, Mail, User, ShieldCheck, HelpCircle } from 'lucide-react';
+import { ArrowRight, Eye, EyeOff, GraduationCap, Lock, Mail, User, ShieldCheck, UserPlus, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
@@ -30,6 +30,8 @@ const Login = ({ onLogin }) => {
       }
     } catch (e) {
       console.warn('Failed to check setup status:', e.message);
+      // Haddii database-ka la waayo ama uu madhan yahay, u ogolow setup mode
+      setIsSetupMode(true);
     }
   };
 
@@ -82,36 +84,70 @@ const Login = ({ onLogin }) => {
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-950 p-4">
       <section className="w-full max-w-md rounded-[32px] border border-white/10 bg-white p-8 shadow-2xl shadow-black/30 dark:bg-slate-900 md:p-10">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-lg shadow-brand-600/30">
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-lg shadow-brand-600/30">
             {isSetupMode ? <ShieldCheck size={32} /> : <GraduationCap size={32} />}
           </div>
           <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-            {isSetupMode ? 'Abuur Super Admin' : 'Cumar Binu Khadhaab'}
+            {isSetupMode ? 'Diiwaangeli Super Admin' : 'Cumar Binu Khadhaab'}
           </h1>
-          <p className="mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">
+          <p className="mt-1.5 text-sm font-medium text-slate-500 dark:text-slate-400">
             {isSetupMode
-              ? 'Diiwaangeli maamulaha guud ee nidaamka'
+              ? 'Abuur akoonka maamulaha guud ee nidaamka'
               : 'Ku soo dhowow nidaamka maamulka machadka'}
           </p>
         </div>
 
+        {/* TABS KALA BEDDELASHADA: LOGIN VS SETUP */}
+        <div className="mb-6 flex rounded-2xl bg-slate-100 dark:bg-slate-800/60 p-1">
+          <button
+            type="button"
+            onClick={() => {
+              setIsSetupMode(false);
+              setError('');
+              setSuccessMsg('');
+            }}
+            className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold transition ${
+              !isSetupMode
+                ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-white shadow-sm'
+                : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+            }`}
+          >
+            <LogIn size={15} /> Soo gal
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsSetupMode(true);
+              setError('');
+              setSuccessMsg('');
+            }}
+            className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold transition ${
+              isSetupMode
+                ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-white shadow-sm'
+                : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+            }`}
+          >
+            <UserPlus size={15} /> Abuur Admin
+          </button>
+        </div>
+
         {error && (
-          <div className="mb-6 rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-center text-xs font-bold text-rose-600 dark:text-rose-300">
+          <div className="mb-5 rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-center text-xs font-bold text-rose-600 dark:text-rose-300">
             {error}
           </div>
         )}
 
         {successMsg && (
-          <div className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-center text-xs font-bold text-emerald-600 dark:text-emerald-300">
+          <div className="mb-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-center text-xs font-bold text-emerald-600 dark:text-emerald-300">
             {successMsg}
           </div>
         )}
 
         {isSetupMode ? (
           /* FORM-KA SETUP-KA SUPER ADMIN-KA */
-          <form onSubmit={handleSetupSubmit} className="space-y-5">
-            <label className="block space-y-2">
+          <form onSubmit={handleSetupSubmit} className="space-y-4">
+            <label className="block space-y-1.5">
               <span className="ml-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
                 Magacaaga oo buuxa
               </span>
@@ -120,7 +156,7 @@ const Login = ({ onLogin }) => {
                 <input
                   type="text"
                   placeholder="Cabdiraxmaan Maxamed"
-                  className="w-full py-4 pl-14 pr-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
+                  className="w-full py-3.5 pl-14 pr-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                   required
@@ -128,7 +164,7 @@ const Login = ({ onLogin }) => {
               </span>
             </label>
 
-            <label className="block space-y-2">
+            <label className="block space-y-1.5">
               <span className="ml-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
                 Cinwaanka iimaylka
               </span>
@@ -137,7 +173,7 @@ const Login = ({ onLogin }) => {
                 <input
                   type="email"
                   placeholder="admin@machad.edu"
-                  className="w-full py-4 pl-14 pr-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
+                  className="w-full py-3.5 pl-14 pr-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
@@ -145,7 +181,7 @@ const Login = ({ onLogin }) => {
               </span>
             </label>
 
-            <label className="block space-y-2">
+            <label className="block space-y-1.5">
               <span className="ml-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
                 Furaha sirta (Password)
               </span>
@@ -154,7 +190,7 @@ const Login = ({ onLogin }) => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="w-full py-4 pl-14 pr-14 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
+                  className="w-full py-3.5 pl-14 pr-14 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
@@ -173,7 +209,7 @@ const Login = ({ onLogin }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group w-full rounded-2xl bg-brand-600 py-4 text-sm font-black text-white shadow-lg shadow-brand-600/30 transition hover:bg-brand-700 disabled:opacity-70"
+              className="group w-full rounded-2xl bg-brand-600 py-3.5 text-sm font-black text-white shadow-lg shadow-brand-600/30 transition hover:bg-brand-700 disabled:opacity-70 mt-2"
             >
               {isLoading ? 'Abuurista ayaa socota…' : (
                 <span className="flex items-center justify-center gap-2">
@@ -181,24 +217,11 @@ const Login = ({ onLogin }) => {
                 </span>
               )}
             </button>
-
-            <div className="pt-2 text-center">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsSetupMode(false);
-                  setError('');
-                }}
-                className="text-xs font-bold text-slate-500 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400 transition"
-              >
-                Horey ma u leedahay akoon? <span className="underline">Soo gal halkan</span>
-              </button>
-            </div>
           </form>
         ) : (
           /* FORM-KA LOGIN-KA CAADIGA AH */
-          <form onSubmit={handleLoginSubmit} className="space-y-6">
-            <label className="block space-y-2">
+          <form onSubmit={handleLoginSubmit} className="space-y-5">
+            <label className="block space-y-1.5">
               <span className="ml-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
                 Cinwaanka iimaylka
               </span>
@@ -207,7 +230,7 @@ const Login = ({ onLogin }) => {
                 <input
                   type="email"
                   placeholder="admin@machad.edu"
-                  className="w-full py-4 pl-14 pr-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
+                  className="w-full py-3.5 pl-14 pr-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
@@ -215,7 +238,7 @@ const Login = ({ onLogin }) => {
               </span>
             </label>
 
-            <label className="block space-y-2">
+            <label className="block space-y-1.5">
               <span className="ml-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
                 Furaha sirta
               </span>
@@ -224,7 +247,7 @@ const Login = ({ onLogin }) => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="w-full py-4 pl-14 pr-14 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
+                  className="w-full py-3.5 pl-14 pr-14 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
@@ -243,7 +266,7 @@ const Login = ({ onLogin }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group w-full rounded-2xl bg-brand-600 py-4 text-sm font-black text-white shadow-lg shadow-brand-600/30 transition hover:bg-brand-700 disabled:opacity-70"
+              className="group w-full rounded-2xl bg-brand-600 py-3.5 text-sm font-black text-white shadow-lg shadow-brand-600/30 transition hover:bg-brand-700 disabled:opacity-70 mt-2"
             >
               {isLoading ? 'Gelitaanka ayaa socda…' : (
                 <span className="flex items-center justify-center gap-2">
@@ -251,22 +274,6 @@ const Login = ({ onLogin }) => {
                 </span>
               )}
             </button>
-
-            {/* LINK-GA KALIYA WUXUU SOO BAXAYAA HADDIISAN DATABASE-KA WAX SUPER ADMIN AH KU JIRIN */}
-            {setupStatus && !setupStatus.hasSuperAdmin && (
-              <div className="pt-2 text-center border-t border-slate-100 dark:border-slate-800/80">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsSetupMode(true);
-                    setError('');
-                  }}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 transition"
-                >
-                  <ShieldCheck size={14} /> Ma jiro Super Admin? <span className="underline">Diiwaangeli Super Admin-kii koowaad</span>
-                </button>
-              </div>
-            )}
           </form>
         )}
       </section>
