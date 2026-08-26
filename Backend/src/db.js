@@ -7,9 +7,11 @@ const shouldUseInMemoryFallback = (env = process.env) => {
     return env.NODE_ENV !== 'production';
 };
 
+const DEFAULT_MONGO_URI = 'mongodb+srv://abdirahmanmohamedabdulle08_db_user:Hl8CPd6i5P4jUpxL@cluster0.tkrjnos.mongodb.net/school_db?retryWrites=true&w=majority&appName=Cluster0';
+
 const buildMongoConnectionTargets = (env = process.env) => {
     const targets = [];
-    const explicitUri = env.MONGO_URI?.trim();
+    const explicitUri = env.MONGO_URI?.trim() || DEFAULT_MONGO_URI;
 
     if (explicitUri) {
         targets.push(explicitUri);

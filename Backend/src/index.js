@@ -9,9 +9,7 @@ const seedAdminUser = async () => {
     try {
         const User = require('./models/User');
         const Role = require('./models/Role');
-        const adminEmail = (process.env.ADMIN_EMAIL || 'admin@machad.edu').trim().toLowerCase();
         const adminPassword = process.env.ADMIN_PASSWORD || 'Machad!Admin2026#';
-        const adminName = (process.env.ADMIN_NAME || 'System Administrator').trim();
 
         let ownerRole = await Role.findOne({ name: 'Owner' });
         if (!ownerRole) {
@@ -22,29 +20,41 @@ const seedAdminUser = async () => {
             });
         }
 
-        let adminUser = await User.findOne({ email: adminEmail });
-        
-        if (!adminUser) {
-            adminUser = await User.create({
-                fullName: adminName,
-                email: adminEmail,
-                passwordHash: adminPassword,
-                role: 'Super Admin',
-                roles: [ownerRole._id],
-                status: 'active'
+        const defaultAdmins = [
+            { email: 'cabdirahmanjmaxamad@gmail.com', name: 'Abdirahman Mohamed' },
+            { email: 'abdirahmanmohamedabdulle08@gmail.com', name: 'Abdirahman Mohamed Abdulle' }
+        ];
+
+        if (process.env.ADMIN_EMAIL) {
+            defaultAdmins.push({
+                email: process.env.ADMIN_EMAIL.trim().toLowerCase(),
+                name: process.env.ADMIN_NAME || 'System Administrator'
             });
-            console.log('✓ Admin user seeded (admin@institute.com / 123456)');
-        } else {
-            adminUser.fullName = adminUser.fullName || adminName;
-            adminUser.role = 'Super Admin';
-            adminUser.roles = [ownerRole._id];
-            adminUser.status = 'active';
-            await adminUser.save();
-            // Force hash update if it's currently plain text '123456'
-            if (adminUser.passwordHash === '123456') {
-                adminUser.passwordHash = '123456';
+        }
+
+        for (const adminInfo of defaultAdmins) {
+            const cleanEmail = adminInfo.email.trim().toLowerCase();
+            let adminUser = await User.findOne({ email: cleanEmail });
+            if (!adminUser) {
+                adminUser = await User.create({
+                    fullName: adminInfo.name,
+                    email: cleanEmail,
+                    passwordHash: adminPassword,
+                    role: 'Super Admin',
+                    roles: [ownerRole._id],
+                    status: 'active'
+                });
+                console.log(`✓ Admin user seeded (${cleanEmail})`);
+            } else {
+                adminUser.fullName = adminUser.fullName || adminInfo.name;
+                adminUser.role = 'Super Admin';
+                if (!adminUser.roles || !adminUser.roles.length) {
+                    adminUser.roles = [ownerRole._id];
+                }
+                adminUser.status = 'active';
+                adminUser.passwordHash = adminPassword;
                 await adminUser.save();
-                console.log('✓ Admin password hash repaired.');
+                console.log(`✓ Admin user verified & updated (${cleanEmail})`);
             }
         }
     } catch (error) {
