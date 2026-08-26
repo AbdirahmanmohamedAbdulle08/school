@@ -252,19 +252,21 @@ const Login = ({ onLogin }) => {
               )}
             </button>
 
-            {/* LINK-GA SOO SAARISTA SUPER ADMIN CUSUB / CAAWIN */}
-            <div className="pt-2 text-center border-t border-slate-100 dark:border-slate-800/80">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsSetupMode(true);
-                  setError('');
-                }}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 transition"
-              >
-                <ShieldCheck size={14} /> Ma jiro Super Admin mise iimaylkaaga ayaad ku samaysanaysaa? <span className="underline">Riix Halkan</span>
-              </button>
-            </div>
+            {/* LINK-GA KALIYA WUXUU SOO BAXAYAA HADDIISAN DATABASE-KA WAX SUPER ADMIN AH KU JIRIN */}
+            {setupStatus && !setupStatus.hasSuperAdmin && (
+              <div className="pt-2 text-center border-t border-slate-100 dark:border-slate-800/80">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsSetupMode(true);
+                    setError('');
+                  }}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 transition"
+                >
+                  <ShieldCheck size={14} /> Ma jiro Super Admin? <span className="underline">Diiwaangeli Super Admin-kii koowaad</span>
+                </button>
+              </div>
+            )}
           </form>
         )}
       </section>
