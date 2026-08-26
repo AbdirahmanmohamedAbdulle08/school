@@ -174,11 +174,72 @@ const deleteUser = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Get setup status
+// @route   GET /api/users/setup-status
+// @access  Public
+const getSetupStatus = asyncHandler(async (req, res) => {
+    const adminCount = await User.countDocuments({ role: { $in: ['Super Admin', 'Owner'] }, status: 'active' });
+    const totalCount = await User.countDocuments();
+    res.json({
+        hasSuperAdmin: adminCount > 0,
+        totalUsers: totalCount,
+        seedAdminEmail: process.env.ADMIN_EMAIL || 'abdirahmanmohamedabdulle08@gmail.com'
+    });
+});
+
+// @desc    Setup initial super admin or add new admin
+// @route   POST /api/users/setup-initial-admin
+// @access  Public
+const setupInitialAdmin = asyncHandler(async (req, res) => {
+    const { fullName, email, password } = req.body;
+    const cleanEmail = email ? String(email).trim().toLowerCase() : '';
+    
+    if (!cleanEmail || !password) {
+        res.status(400);
+        throw new Error('Email iyo Password ayaa loo baahan yahay');
+    }
+
+    const Role = require('../models/Role');
+    let ownerRole = await Role.findOne({ name: 'Owner' });
+    if (!ownerRole) {
+        ownerRole = await Role.create({
+            name: 'Owner',
+            description: 'Full system access - Business Owner',
+            isSystemRole: true
+        });
+    }
+
+    let user = await User.findOne({ email: cleanEmail });
+    if (user) {
+        user.fullName = fullName || user.fullName;
+        user.role = 'Super Admin';
+        user.roles = [ownerRole._id];
+        user.passwordHash = password;
+        user.status = 'active';
+        await user.save();
+    } else {
+        user = await User.create({
+            fullName: fullName || 'System Administrator',
+            email: cleanEmail,
+            passwordHash: password,
+            role: 'Super Admin',
+            roles: [ownerRole._id],
+            status: 'active'
+        });
+    }
+
+    const populatedUser = await User.findById(user._id).select('-passwordHash').populate('roles');
+    res.status(201).json(formatUserResponse(populatedUser, generateToken(user._id)));
+});
+
 module.exports = {
     registerUser,
     authUser,
     getUserProfile,
     getUsers,
     updateUser,
-    deleteUser
+    deleteUser,
+    getSetupStatus,
+    setupInitialAdmin
 };
+

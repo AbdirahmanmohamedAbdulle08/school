@@ -6,11 +6,15 @@ const {
     getUserProfile,
     getUsers,
     updateUser,
-    deleteUser
+    deleteUser,
+    getSetupStatus,
+    setupInitialAdmin
 } = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
 const { checkPermission } = require('../middleware/roleMiddleware');
 
+router.get('/setup-status', getSetupStatus);
+router.post('/setup-initial-admin', setupInitialAdmin);
 router.post('/login', authUser);
 router.get('/profile', protect, getUserProfile);
 
