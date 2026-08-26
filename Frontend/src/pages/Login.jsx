@@ -98,39 +98,41 @@ const Login = ({ onLogin }) => {
           </p>
         </div>
 
-        {/* TABS KALA BEDDELASHADA: LOGIN VS SETUP */}
-        <div className="mb-6 flex rounded-2xl bg-slate-100 dark:bg-slate-800/60 p-1">
-          <button
-            type="button"
-            onClick={() => {
-              setIsSetupMode(false);
-              setError('');
-              setSuccessMsg('');
-            }}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold transition ${
-              !isSetupMode
-                ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-white shadow-sm'
-                : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-            }`}
-          >
-            <LogIn size={15} /> Soo gal
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setIsSetupMode(true);
-              setError('');
-              setSuccessMsg('');
-            }}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold transition ${
-              isSetupMode
-                ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-white shadow-sm'
-                : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-            }`}
-          >
-            <UserPlus size={15} /> Abuur Admin
-          </button>
-        </div>
+        {/* TABS KALA BEDDELASHADA: LOGIN VS SETUP (Kaliya haddii Admin uusan jirin) */}
+        {(!setupStatus || !setupStatus.hasSuperAdmin) && (
+          <div className="mb-6 flex rounded-2xl bg-slate-100 dark:bg-slate-800/60 p-1">
+            <button
+              type="button"
+              onClick={() => {
+                setIsSetupMode(false);
+                setError('');
+                setSuccessMsg('');
+              }}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold transition ${
+                !isSetupMode
+                  ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+              }`}
+            >
+              <LogIn size={15} /> Soo gal
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsSetupMode(true);
+                setError('');
+                setSuccessMsg('');
+              }}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold transition ${
+                isSetupMode
+                  ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+              }`}
+            >
+              <UserPlus size={15} /> Abuur Admin
+            </button>
+          </div>
+        )}
 
         {error && (
           <div className="mb-5 rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-center text-xs font-bold text-rose-600 dark:text-rose-300">
