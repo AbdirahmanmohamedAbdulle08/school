@@ -2,8 +2,10 @@
   "name": "mach-inventory-system",
   "private": true,
   "scripts": {
-    "start": "npm --prefix Frontend start",
+    "start": "npm --prefix Backend start",
     "start:backend": "npm --prefix Backend start",
-    "build": "npm --prefix Frontend run build"
+    "start:frontend": "npm --prefix Frontend start",
+    "build": "npm --prefix Backend install",
+    "build:frontend": "npm --prefix Frontend install && npm --prefix Frontend run build"
   }
 }
