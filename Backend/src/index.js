@@ -5,12 +5,10 @@ const connectDB = require('./db');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
 // Connect to Database and auto-seed admin
-const seedAdminUser = async () => {
+// Ensure base system roles exist on startup
+const ensureSystemRoles = async () => {
     try {
-        const User = require('./models/User');
         const Role = require('./models/Role');
-        const adminPassword = process.env.ADMIN_PASSWORD || 'Machad!Admin2026#';
-
         let ownerRole = await Role.findOne({ name: 'Owner' });
         if (!ownerRole) {
             ownerRole = await Role.create({
@@ -18,47 +16,10 @@ const seedAdminUser = async () => {
                 description: 'Full system access - Business Owner',
                 isSystemRole: true
             });
-        }
-
-        const defaultAdmins = [
-            { email: 'cabdirahmanjmaxamad@gmail.com', name: 'Abdirahman Mohamed' },
-            { email: 'abdirahmanmohamedabdulle08@gmail.com', name: 'Abdirahman Mohamed Abdulle' }
-        ];
-
-        if (process.env.ADMIN_EMAIL) {
-            defaultAdmins.push({
-                email: process.env.ADMIN_EMAIL.trim().toLowerCase(),
-                name: process.env.ADMIN_NAME || 'System Administrator'
-            });
-        }
-
-        for (const adminInfo of defaultAdmins) {
-            const cleanEmail = adminInfo.email.trim().toLowerCase();
-            let adminUser = await User.findOne({ email: cleanEmail });
-            if (!adminUser) {
-                adminUser = await User.create({
-                    fullName: adminInfo.name,
-                    email: cleanEmail,
-                    passwordHash: adminPassword,
-                    role: 'Super Admin',
-                    roles: [ownerRole._id],
-                    status: 'active'
-                });
-                console.log(`✓ Admin user seeded (${cleanEmail})`);
-            } else {
-                adminUser.fullName = adminUser.fullName || adminInfo.name;
-                adminUser.role = 'Super Admin';
-                if (!adminUser.roles || !adminUser.roles.length) {
-                    adminUser.roles = [ownerRole._id];
-                }
-                adminUser.status = 'active';
-                adminUser.passwordHash = adminPassword;
-                await adminUser.save();
-                console.log(`✓ Admin user verified & updated (${cleanEmail})`);
-            }
+            console.log('✓ System Owner role initialized');
         }
     } catch (error) {
-        console.error('Auto-seed error:', error.message);
+        console.error('Role initialization error:', error.message);
     }
 };
 
@@ -69,7 +30,7 @@ connectDB().then(async () => {
         TeacherAttendance.removeLegacyDailyUniqueIndex(),
         StudentAttendance.removeLegacyDailyUniqueIndex()
     ]);
-    await seedAdminUser();
+    await ensureSystemRoles();
 }).catch(err => {
     console.error('Failed to connect to MongoDB on startup. The server will start, but DB operations will fail until connection is established:', err.message);
 });
