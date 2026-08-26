@@ -37,13 +37,11 @@ connectDB().then(async () => {
 
 const app = express();
 
-// Middleware. Set FRONTEND_URL to your deployed frontend URL in production.
-const allowedOrigins = (process.env.FRONTEND_URL || '')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean);
 app.use(cors({
-    origin: allowedOrigins.length ? allowedOrigins : true,
+    origin: function (origin, callback) {
+        // Allow all origins dynamically to support credentials: true
+        callback(null, true);
+    },
     credentials: true
 }));
 app.use(express.json());
