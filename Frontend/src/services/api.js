@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // VITE_API_URL should be the API host (no trailing slash, no /api path).
 // Example: https://machad-backend.onrender.com
-const defaultHost = import.meta.env.DEV ? 'http://localhost:5005' : 'https://machad-backend.onrender.com';
+const defaultHost = import.meta.env.DEV ? 'http://localhost:5005' : 'https://school-sxfb.onrender.com';
 const host = import.meta.env.VITE_API_URL || defaultHost;
 const apiBaseUrl = String(host).replace(/\/$/, '') + '/api';
 
