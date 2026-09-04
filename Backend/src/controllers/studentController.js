@@ -19,13 +19,17 @@ const getStudentById = asyncHandler(async (req, res) => {
 const createStudent = asyncHandler(async (req, res) => {
     const payload = { ...req.body };
 
-    if (!payload.studentCode && payload.rollNumber) {
-        payload.studentCode = payload.rollNumber;
+    const lastStudent = await Student.findOne({ rollNumber: { $regex: /^\\d+$/ } })
+        .collation({ locale: "en_US", numericOrdering: true })
+        .sort({ rollNumber: -1 });
+    
+    let nextRoll = 1001;
+    if (lastStudent && lastStudent.rollNumber) {
+        nextRoll = parseInt(lastStudent.rollNumber, 10) + 1;
     }
-
-    if (!payload.studentCode) {
-        payload.studentCode = `STU-${Date.now()}`;
-    }
+    
+    payload.rollNumber = nextRoll.toString();
+    payload.studentCode = `STU-${nextRoll}`;
 
     if (!payload.branchId && req.user?.branchId) {
         payload.branchId = req.user.branchId;

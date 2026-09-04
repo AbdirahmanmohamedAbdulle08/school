@@ -359,17 +359,7 @@ const StudentsManagement = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-black uppercase text-slate-500 mb-1">Roll / ID Number</label>
-                  <input
-                    type="text"
-                    placeholder="STU-1001"
-                    value={formData.rollNumber}
-                    onChange={(e) => setFormData({ ...formData, rollNumber: e.target.value })}
-                    className="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-slate-900 dark:text-white"
-                  />
-                </div>
+              <div className="grid grid-cols-1 gap-4">
                 <div>
                   <label className="block text-xs font-black uppercase text-slate-500 mb-1">Class</label>
                   <select
