@@ -90,12 +90,21 @@ const StudentsManagement = () => {
     return () => clearTimeout(timer);
   }, [formData.guardianPhone]);
 
-  const openAddModal = () => {
+  const openAddModal = async () => {
     setEditingItem(null);
     setFoundGuardian(null);
+    
+    let nextId = '';
+    try {
+      const res = await api.get('/students/next-id');
+      nextId = res.data?.nextId || '';
+    } catch (e) {
+      console.error('Failed to fetch next student ID', e);
+    }
+
     setFormData({
       fullName: '',
-      rollNumber: '',
+      rollNumber: nextId ? `STU-${nextId}` : 'STU-Auto',
       classId: classes[0]?._id || '',
       gender: 'Male',
       monthlyFee: '',
@@ -359,7 +368,18 @@ const StudentsManagement = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-black uppercase text-slate-500 mb-1">Roll / ID Number</label>
+                  <input
+                    type="text"
+                    placeholder="Auto-generated"
+                    value={formData.rollNumber}
+                    readOnly
+                    disabled
+                    className="w-full px-4 py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-slate-500 dark:text-slate-400 cursor-not-allowed font-medium"
+                  />
+                </div>
                 <div>
                   <label className="block text-xs font-black uppercase text-slate-500 mb-1">Class</label>
                   <select

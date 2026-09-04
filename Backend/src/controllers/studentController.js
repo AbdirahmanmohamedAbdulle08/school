@@ -16,6 +16,18 @@ const getStudentById = asyncHandler(async (req, res) => {
     }
 });
 
+const getNextStudentId = asyncHandler(async (req, res) => {
+    const lastStudent = await Student.findOne({ rollNumber: { $regex: /^\\d+$/ } })
+        .collation({ locale: "en_US", numericOrdering: true })
+        .sort({ rollNumber: -1 });
+    
+    let nextRoll = 1001;
+    if (lastStudent && lastStudent.rollNumber) {
+        nextRoll = parseInt(lastStudent.rollNumber, 10) + 1;
+    }
+    res.json({ nextId: nextRoll.toString() });
+});
+
 const createStudent = asyncHandler(async (req, res) => {
     const payload = { ...req.body };
 
@@ -78,6 +90,7 @@ const deleteStudent = asyncHandler(async (req, res) => {
 module.exports = {
     getStudents,
     getStudentById,
+    getNextStudentId,
     createStudent,
     updateStudent,
     deleteStudent
